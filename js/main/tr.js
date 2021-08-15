@@ -28,6 +28,7 @@ function getTimeCubeGain() {
 	if (tmp.dc) if (player.dc.unl) gain = gain.times(tmp.dc.deEff);
 	if (tmp.dc) if (player.tr.upgrades.includes(11)) gain = gain.times(tr11Eff()["cg"]);
 	if (tmp.inf) if (tmp.inf.upgs.has("2;3")) gain = gain.times(INF_UPGS.effects["2;3"]()["cubes"]);
+	if (modeActive("reality")) gain = gain.div(10).root(1.75);
 	return gain
 }
 
@@ -133,5 +134,5 @@ function tr19Eff() {
 	if (!modeActive("extreme")) return new ExpantaNum(1)
 	let eff = ExpantaNum.div(4.5, tmp.auto ? tmp.auto.rankCheapbot.interval.max(1e-10) : 1).pow(getTR89Mod().times(0.3)).max(1);
 	if (showNum(eff) === undefined || !eff.isFinite()) eff = new ExpantaNum(1)
-	return eff
+	return eff//.add(1).div(2)
 }

@@ -35,14 +35,14 @@ function loadTempFeatures() {
 		"time reversal": new Feature({
 			name: "time reversal",
 			displayName: "时间反演",
-			req: function() { return new ExpantaNum(DISTANCES.光年) },
+			req: function() { return ExpantaNum(DISTANCES.太米).mul(10) },
 			res: "distance",
 			display: formatDistance,
 			reached: function() { return player.tr.unl },
 			progress: function () {
 				if (player.options.featPerc=="logarithm") {
-					return player.distance.max(1).log10().div(new ExpantaNum(DISTANCES.光年).log10());
-				} else return ExpantaNum.div(DISTANCES.光年, player.distance).pow(-1)
+					return player.distance.max(1).log10().div(ExpantaNum(DISTANCES.太米).mul(10).log10());
+				} else return ExpantaNum.div(ExpantaNum(DISTANCES.太米).mul(10), player.distance).pow(-1)
 			}
 		}),
 		collapse: new Feature({

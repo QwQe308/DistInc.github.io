@@ -290,7 +290,7 @@ function energyAutoTick(){
 	if (tmp.ach[14].has) refillEnergy()
 	if (player.automators["EU"]){
 		//let val = new ExpantaNum(player.autoTxt["EU"]||0)
-		buyEnergyUpg(1)
+		buyEnergyUpg(1);buyEnergyUpg(2)
 		for (i=1 ; i<=36 ; i++) {
 		if(getEnergyUpgCost(i).add(ExpantaNum(player.autoTxt["EU"]||0)).lte(tmp.hd.motive) && isEnergyUpgShown(i)) buyEnergyUpg(i)
 		}

@@ -336,7 +336,7 @@ function updateAfterTick() {
 
 function updateUnlocks() {
 	if (player.distance.gte(ExpantaNum.mul(AUTO_UNL, tmp.auto.lrm))) player.automation.unl = true;
-	if (player.distance.gte(DISTANCES.光年)) player.tr.unl = true;
+	if (player.distance.div(10).gte(DISTANCES.太米)) player.tr.unl = true;
 	if (player.distance.gte(ExpantaNum.mul(COLLAPSE_UNL, tmp.collapse.lrm))) player.collapse.unl = true;
 	if (player.collapse.cadavers.gte(ExpantaNum.mul(PATHOGENS_UNL, tmp.pathogens.lrm))) player.pathogens.unl = true;
 	if (player.distance.gte(ExpantaNum.mul(DC_UNL, tmp.dc.lrm))) player.dc.unl = true;

@@ -4,6 +4,7 @@ function updateTempTimeSpeed() {
 	if (modeActive("hard")) tmp.timeSpeed = tmp.timeSpeed.times(0.75);
 	if (modeActive("easy")) tmp.timeSpeed = tmp.timeSpeed.times(2.5);
 	if (modeActive("extreme")) tmp.timeSpeed = tmp.timeSpeed.times(0.7);
+	if(tmp.ach) if(tmp.ach[45].has) tmp.timeSpeed = new ExpantaNum(1)
 	if (player.tr.upgrades.includes(2) && !HCCBA("noTRU")) tmp.timeSpeed = tmp.timeSpeed.times(tr2Eff());
 	if (player.tr.upgrades.includes(7) && !HCCBA("noTRU")) tmp.timeSpeed = tmp.timeSpeed.times(tr7Eff());
 	if (player.tr.upgrades.includes(18) && !HCCBA("noTRU") && modeActive("extreme"))
@@ -61,4 +62,6 @@ function updateTempTimeSpeed() {
 		let mlt300 = ExpantaNum.pow(DISTANCES.多宇宙, 300);
 		tmp.timeSpeed = ExpantaNum.pow(mlt300, tmp.timeSpeed.logBase(mlt300).root(5))
 	}
+	if(modeActive("reality") && tmp.timeSpeed.gte(10000)) tmp.timeSpeed = tmp.timeSpeed.div(10000).sqrt().mul(10000)
+	if(modeActive("reality") && tmp.timeSpeed.gte(1)) tmp.timeSpeed = tmp.timeSpeed.pow(0.85)
 }

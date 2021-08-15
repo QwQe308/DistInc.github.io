@@ -88,7 +88,7 @@ const NEWS_DATA = {
 	m69: ['“非常好，完美。” —— 某个写下第69条滚动新闻的家伙'],
 	m70: ["软上限您是！"],
 	m71: ['“荒诞模式蠢到家了。” —— 某个Reddit玩家'],
-	m72: ['我还在寻找一些暴胀，结果突然听到了一个平静得可怕的声音：“已达软上限”'],
+	m72: ['我还在寻找一些数值膨胀，结果突然听到了一个平静得可怕的声音：“已达软上限”'],
 	m73: ["1星差评：蛋不是下个机制"],
 	m74: ["5分钟以内蛋升级就裂开了"],
 	m75: ["泡沫真的存在吗？"],
@@ -123,6 +123,56 @@ const NEWS_DATA = {
 	m104: ["我们很庆幸我们的宇宙未受感染，我很肯定在某些平行多宇宙中情况可不太妙……"],
 	m105: ["有人表示多宇宙中是没有至高神的。他们大概活不过三集。"],
 	m106: ["有人表示至高神只有那么几位而已。他们大概活不过三集。"],
+
+	//现实
+	cr1: [
+		"这是真的吗",
+		function () {
+			return player.modes.includes("reality")
+		}
+	],
+	cr2: [
+		"光速是299792458m/s...你应该发现了速度在光速的时候有个软上限.真实mod独有.",
+		function () {
+			return player.modes.includes("reality") && player.distance.gte(299792458)
+		}
+	],
+	cr3: [
+		"超越光速。-faster than light--------------------(reality-softcapped)",
+		function () {
+			return player.modes.includes("reality") && player.distance.gte(299792458)
+		}
+	],
+	cr4: [
+		"又一个毫无创意的软上限。也不知道现实mod的作者怎么想的。",
+		function () {
+			return player.modes.includes("reality") && player.collapse.unl
+		}
+	],
+	cr5: [
+		"不真实的是，你为何能在宇宙塌缩里活下来？",
+		function () {
+			return player.modes.includes("reality") && player.collapse.unl
+		}
+	],
+	cr6: [
+		"看，我们就快飞到那了！(已达软上限)",
+		function () {
+			return player.modes.includes("reality") && player.rockets.unl
+		}
+	],
+	cr7: [
+		"现实mod的作者是QwQe308(QwQ,qq317495334...我又习惯性输成某大佬的qq1010903229了)",
+		function () {
+			return player.modes.includes("reality")
+		}
+	],
+	r1: ["您想要(已达软上限)，但神却说<span class='sc'>(已达极端软上限)</span>"],
+	r2: ["您想要(已达极端软上限)，但神却说<span class='sc'>(已达硬上限)</span>"],
+	r3: ["您想要(已达硬上限)，但神却说<span class='sc'>(undefined)</span>"],
+	r4: ["您想要...能不写这个了不..."],
+	r5: ["悖论 404：NOT FOUND"],
+	r6: ["软上限是什么？通俗一点讲，1+1=1.1"],
 
 	// Distance-based Conditions
 	d1: [
@@ -233,18 +283,6 @@ const NEWS_DATA = {
 			return player.modes.includes("hikers_dream")
 		}
 	],
-	mod9: [
-		"这是真的吗",
-		function () {
-			return player.modes.includes("reality")
-		}
-	],
-	mod10: [
-		"光速是299792458m/s...你应该发现了速度在光速的时候有个软上限.真实mod独有.",
-		function () {
-			return player.modes.includes("reality")
-		}
-	],
 
 	// Chance-based Conditions
 	c1: [
@@ -343,6 +381,12 @@ const NEWS_DATA = {
 		"有能耐你就在荒诞模式玩到这啊",
 		function () {
 			return player.achievements.length >= 96 && !player.modes.includes("absurd");
+		}
+	],
+	a10: [
+		"对不起您真的有能耐",
+		function () {
+			return player.achievements.length >= 96 && player.modes.includes("absurd");
 		}
 	],
 

@@ -7,16 +7,16 @@ const ROBOT_REQS = {
 };
 const ROBOT_COST_INC = {
 	interval: {
-		rankbot: new ExpantaNum(7),
-		rankCheapbot: new ExpantaNum(7.5),
-		tierbot: new ExpantaNum(8),
-		fuelbot: new ExpantaNum(15)
+		rankbot: new ExpantaNum(2),
+		rankCheapbot: new ExpantaNum(2.5),
+		tierbot: new ExpantaNum(3),
+		fuelbot: new ExpantaNum(10)
 	},
 	magnitude: {
-		rankbot: new ExpantaNum(3),
-		rankCheapbot: new ExpantaNum(3.5),
-		tierbot: new ExpantaNum(4),
-		fuelbot: new ExpantaNum(12)
+		rankbot: new ExpantaNum(1.5),
+		rankCheapbot: new ExpantaNum(2),
+		tierbot: new ExpantaNum(2.15),
+		fuelbot: new ExpantaNum(11)
 	}
 };
 const ROBOT_COST_START = {

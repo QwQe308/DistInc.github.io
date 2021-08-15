@@ -3,7 +3,7 @@ const LAYER_RESETS = {
 	rankCheap: ["distance", "velocity"],
 	tier: ["distance", "velocity", "rank"],
 	rockets: ["distance", "velocity", "rank", "tier"],
-	rf: ["rockets"],
+	rf: ["rockets","distance", "velocity", "rank", "tier"],
 	collapse: ["distance", "velocity", "rank", "tier", "rockets", "rf", "tr"],
 	inf: ["distance", "velocity", "rank", "tier", "rockets", "rf", "tr", "automation", "collapse", "pathogens", "dc"],
 	elementary: [
@@ -43,8 +43,8 @@ const LAYER_RESETS_EXTRA = {
 	tier: [/*"energy",*/ "canRefill", "rankCheap"],
 	rockets: ["energy", "spentMotive", "energyUpgs", "canRefill", "geners", "genLvl", "spentMotiveGens", "bestMotive", "rankCheap","bankedMotive"],
 	rf: [],
-	collapse: ["energy", "canRefill", "rankCheap", "furnace"],
-	inf: ["energy", "canRefill", "rankCheap", "furnace", "activeFC"],
+	collapse: ["energy", "canRefill", "rankCheap", "energyUpgs", "furnace", "geners", "genLvl", "spentMotiveGens", "bestMotive", "bankedMotive", "spentMotive"],
+	inf: ["energy", "canRefill", "rankCheap", "furnace", "activeFC", "energyUpgs", "geners", "genLvl", "spentMotiveGens", "bestMotive", "bankedMotive"],
 	elementary: ["energy", "spentMotive", "energyUpgs", "canRefill", "geners", "genLvl", "spentMotiveGens", "bestMotive", "rankCheap", "furnace", "activeFC", "furnChalls", "extremeStad"],
 	multiverse: ["energy", "spentMotive", "energyUpgs", "canRefill", "geners", "genLvl", "spentMotiveGens", "bestMotive", "rankCheap", "furnace", "activeFC", "furnChalls", "extremeStad", "magma", "plasma"],
 };

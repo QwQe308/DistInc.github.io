@@ -7,11 +7,11 @@ const ENERGY_UPG_COSTS = {
 	6: new ExpantaNum(2500),
 	7: new ExpantaNum(3600),
 	8: new ExpantaNum(25000),
-	9: new ExpantaNum(2800),
-	10: new ExpantaNum(4000),
-	11: new ExpantaNum(6000),
-	12: new ExpantaNum(10000),
-	13: new ExpantaNum(5000),
+	9: new ExpantaNum(280000),
+	10: new ExpantaNum(400000),
+	11: new ExpantaNum(600000),
+	12: new ExpantaNum(1000000),
+	13: new ExpantaNum(500000),
 	14: new ExpantaNum(5e5),
 	15: new ExpantaNum(1e6),
 	16: new ExpantaNum(56000),
@@ -62,7 +62,7 @@ function getBaseMotive(){
 	let z = player.rank.pow(3).times(player.tier.plus(1).pow(4)).times(tmp.hd.incline.plus((player.energyUpgs.includes(13)&&tmp.hd.enerUpgs) ? tmp.hd.enerUpgs[13] : 0).div(90).plus(1)).times((player.energyUpgs.includes(28)&&tmp.hd.enerUpgs)?tmp.hd.enerUpgs[28]:1)
 	let y = getBaseMotiveScalingStart()
 	if (tmp.ach) if (z.gt(y) && modeActive("extreme") && !tmp.ach[87].has) z = z.div(y).pow(.5).times(y)
-	if (tmp.ach) if (z.gt(y) && modeActive("reality") && !tmp.ach[87].has) z = z.div(y).pow(.65).times(y)
+	if (tmp.ach) if (z.gt(y) && modeActive("reality") && !tmp.ach[87].has) z = z.div(y).pow(tmp.ach[35].has ? 0.75 : 0.65).times(y)
 	
 	return z
 }
@@ -443,6 +443,7 @@ function showENTab(name) {
 function getEnergyLim() {
 	let lim = new ExpantaNum(100)
 	if(tmp.ach) if(tmp.ach[14].has) lim = lim.mul(1.5)
+	if(tmp.ach) if(tmp.ach[45].has) lim = lim.add(100)
 	if (player.inf.endorsements.gte(10)) {
 		let lvl = player.genLvl
 		if (lvl.gte(6)) lvl = lvl.times(6).sqrt()

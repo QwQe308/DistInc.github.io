@@ -4,7 +4,7 @@ const SCALING_STARTS = {
 		rankCheap: new ExpantaNum(10),
 		tier: new ExpantaNum(8),
 		rf: new ExpantaNum(35),
-		fn: new ExpantaNum(6),
+		fn: new ExpantaNum(8),
 		bf: new ExpantaNum(15),
 		efn: new ExpantaNum(20),
 		pathogenUpg: new ExpantaNum(10),

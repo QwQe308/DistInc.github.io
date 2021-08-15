@@ -2,12 +2,12 @@ function updateCoalGain(){
 	tmp.fn.gain = ExpantaNum.pow(2, player.rf.min(inFC(5)?1:(1/0))).sub(1).max(player.rf.gt(0)?1:0).times(ExpantaNum.pow(tmp.fn1base, player.furnace.upgrades[0].times(tmp.fn.upgPow)));
 	if (modeActive("extreme+hikers_dream")){
 		if (player.achievements.includes(16) && tmp.hd.totalMotive) {
-			let eff = tmp.hd.totalMotive.max(100).div(100)
+			let eff = tmp.hd.totalMotive.max(1e5).div(1e5).pow(2)
 			tmp.fn.gain = tmp.fn.gain.times(eff)
 		}
 		if (player.achievements.includes(26) && tmp.hd.enerUpgs[1]) {
-			let eff = tmp.hd.enerUpgs[1].plus(10).log10().pow(3)
-			if (tmp.hd.enerUpgs[1].gt(250)) eff = eff.times(3)
+			let eff = tmp.hd.enerUpgs[1].plus(10).log10().pow(4)
+			if (tmp.hd.enerUpgs[1].gt(250)) eff = eff.pow(1.5)
 			tmp.fn.gain = tmp.fn.gain.times(eff)
 		}
 	}
@@ -17,6 +17,10 @@ function updateCoalGain(){
 	if (inFC(2)) tmp.fn.gain = tmp.fn.gain.pow(0.075)
 	if (extremeStadiumActive("flamis", 5)) tmp.fn.gain = tmp.fn.gain.pow(0.2)
 	if (tmp.ach[131].has) tmp.fn.gain = tmp.fn.gain.times(100)
+	if(modeActive("reality")) tmp.fn.gain = tmp.fn.gain.div(1000)
+	if(modeActive("reality")){
+		if(tmp.fn.gain.gte(1e35)) tmp.fn.gain = tmp.fn.gain.div(1e35).pow(0.75).mul(1e35)
+	}
 }
 
 function updateFurnaceUpgradeCosts() {
@@ -241,8 +245,8 @@ function updateBlueFlameCost() {
 }
 
 function updateBlueFlameReset() {
-	if (!tmp.fn.bfReset) tmp.fn.bfReset = function () {
-		if (player.furnace.coal.lt(tmp.fn.bfReq)) return;
+	if (!tmp.fn.bfReset) tmp.fn.bfReset = function (hardReset = false) {
+		if (player.furnace.coal.lt(tmp.fn.bfReq) && !hardReset) return;
 		player.furnace.coal = new ExpantaNum(0);
 		player.furnace.upgrades = [new ExpantaNum(0), new ExpantaNum(0), new ExpantaNum(0), new ExpantaNum(0), new ExpantaNum(0)];
 		player.furnace.blueFlame = player.furnace.blueFlame.plus(1);

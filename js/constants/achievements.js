@@ -350,7 +350,7 @@ const ACH_DATA = {
 		13: "boolean(reality,能量升级1再次被动力增幅，这次在软上限后.)",
 		14: "加速度和最大速度增加showNum(50)%boolean(extreme,，且火箭重置时您直接获得1个级别降价器)。boolean(reality,解锁自动复原能量。)",
 		15: "火箭的获取量增加showNum(5)%boolean(extreme,，并解锁熔炉)。",
-		16: "boolean(extreme+hikers_dream,根据动力总量，增加煤的获取量。)",
+		16: "boolean(extreme+hikers_dream,根据超过1e5的动力总量，增加煤的获取量。)",
 		17: "时间加快showNum(1)%。",
 		18: "时间加快showNum(50)%。",
 
@@ -363,7 +363,7 @@ const ACH_DATA = {
 
 		32: "加速度增加showNum(80)%。",
 		34: "火箭的获取量增加showNum(10)%boolean(extreme,，且您再次额外获得1个级别降价器)。boolean(reality,同时您的能量增加50%。)",
-		35: "加速度增加showNum(80)%boolean(extreme,，且煤的效果翻倍)。",
+		35: "加速度增加showNum(80)%boolean(extreme,，且煤的效果翻倍)。boolean(reality,减弱动力软上限。)",
 		36: "碎屑和智慧的获取量增加showNum(50)%boolean(extreme+hikers_dream,，且每个熔炉升级使 优化 升级软上限的起始值增加10%)。",
 		38: "残骸的获取量翻倍boolean(extreme+hikers_dream,，且乘以能量升级总量的平方，最小为1)。",
 
@@ -371,6 +371,7 @@ const ACH_DATA = {
 		42: "boolean(reality,解锁自动能量升级。)",
 		43: "级别需求公式缓和showNum(2.5)%。",
 		44: "火箭的获取量增加showNum(15)%。",
+		45: "boolean(reality,能量上限+100，时间速率不受mod影响，不用谢。)",
 		46: "智慧的获取量翻倍。",
 		47: "时间加快showNum(50)%。",
 		48: "您可以最大化购买机器人升级。",
