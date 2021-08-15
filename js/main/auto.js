@@ -39,6 +39,7 @@ function getScrapGain() {
 	if (!HCCBA("noTRU") && player.tr.upgrades.includes(6)) gain = gain.times(tr6Eff());
 	if (modeActive("hard")) gain = gain.div(2)
 	if (modeActive("easy")) gain = gain.times(3)
+	//if (modeActive("reality")) gain = gain.mul(3.14)
 	return gain
 }
 
@@ -56,6 +57,7 @@ function getIntelligenceGain() {
 	if (player.tr.upgrades.includes(6) && !HCCBA("noTRU")) gain = gain.times(tr6Eff());
 	if (modeActive("hard")) gain = gain.div(2)
 	if (modeActive("easy")) gain = gain.times(1.6)
+	if (modeActive("reality")) gain = gain.mul(3.14)
 	return gain
 }
 
@@ -283,6 +285,15 @@ function energyAutoTick(){
 	if (tmp.ach) if (tmp.ach[141].has) {
 		buyGen()
 		newGen()
+	}
+	if (!modeActive("reality")) return
+	if (tmp.ach[14].has) refillEnergy()
+	if (player.automators["EU"]){
+		//let val = new ExpantaNum(player.autoTxt["EU"]||0)
+		buyEnergyUpg(1)
+		for (i=1 ; i<=36 ; i++) {
+		if(getEnergyUpgCost(i).add(ExpantaNum(player.autoTxt["EU"]||0)).lte(tmp.hd.motive) && isEnergyUpgShown(i)) buyEnergyUpg(i)
+		}
 	}
 }
 

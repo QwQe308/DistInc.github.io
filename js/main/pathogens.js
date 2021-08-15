@@ -28,7 +28,7 @@ function updatePathogensGain(){
 	if (player.tr.upgrades.includes(25)&&modeActive("extreme")) tmp.pathogens.gain = tmp.pathogens.gain.times(5)
 	if (tmp.elm)
 		if (player.elementary.times.gt(0))
-			tmp.pathogens.gain = tmp.pathogens.gain.times(tmp.elm.ferm.quarkR("strange").max(1));
+			tmp.pathogens.gain = tmp.pathogens.gain.times(tmp.elm.ferm.quarkR("奇").max(1));
 	if (tmp.elm) tmp.pathogens.gain = tmp.pathogens.gain.times(tmp.elm.bos.photonEff(1).max(1));
 	if (tmp.inf) if (tmp.inf.upgs.has("5;10")) tmp.pathogens.gain = tmp.pathogens.gain.times(INF_UPGS.effects["5;10"]().pth)
 	if (tmp.inf) if (tmp.inf.upgs.has("10;5")) tmp.pathogens.gain = tmp.pathogens.gain.times(INF_UPGS.effects["10;5"]())
@@ -65,7 +65,7 @@ function updateTempPathogens() {
 	if (extremeStadiumComplete("quantron")) tmp.pathogens.upgPow = tmp.pathogens.upgPow.plus(EXTREME_STADIUM_DATA.quantron.effect());
 	if (tmp.elm)
 		if (player.elementary.times.gt(0))
-			tmp.pathogens.upgPow = tmp.pathogens.upgPow.plus(tmp.elm.ferm.leptonR("netrion"));
+			tmp.pathogens.upgPow = tmp.pathogens.upgPow.plus(tmp.elm.ferm.leptonR("中微"));
 	if (tmp.inf) if (tmp.inf.upgs.has("9;10")) tmp.pathogens.upgPow = tmp.pathogens.upgPow.plus(INF_UPGS.effects["9;10"]().sub(1).max(0))
 	if (player.elementary.theory.tree.unl) tmp.pathogens.upgPow = tmp.pathogens.upgPow.plus(TREE_UPGS[13].effect(player.elementary.theory.tree.upgrades[13]||0))
 	if (hasDE(5)) if ((player.elementary.theory.tree.upgrades[25]||new ExpantaNum(0)).gte(1)) tmp.pathogens.upgPow = tmp.pathogens.upgPow.plus(1.5)
@@ -217,18 +217,18 @@ function updateTempPathogens() {
 	if (!tmp.pathogens.disp) tmp.pathogens.disp = function (n) {
 		let eff = tmp.pathogens.eff(n);
 		if (n == 1) return "+" + showNum(eff.sub(1).times(100)) + "%";
-		else if (n == 2) return showNum(eff) + "x";
-		else if (n == 3) return showNum(eff) + "x";
-		else if (n == 4) return showNum(eff) + "x";
-		else if (n == 5) return showNum(eff) + "x";
+		else if (n == 2) return showNum(eff) + " 倍";
+		else if (n == 3) return showNum(eff) + " 倍";
+		else if (n == 4) return showNum(eff) + " 倍";
+		else if (n == 5) return showNum(eff) + " 倍";
 		else if (n == 6) return "+" + showNum(eff.sub(1).times(100)) + "%";
-		else if (n == 7) return showNum(eff) + "x later";
-		else if (n == 8) return showNum(eff) + " later";
-		else if (n == 9) return showNum(eff) + "x later";
-		else if (n == 10) return showNum(eff) + "x later";
-		else if (n == 11 || n == 12) return showNum(eff) + " later";
-		else if (n == 13) return "+" + showNum(eff) + " Levels";
-		else if (n == 14 || n == 15) return showNum(eff.times(100)) + "% weaker";
+		else if (n == 7) return "延迟 " + showNum(eff) + " 倍";
+		else if (n == 8) return "延迟 " + showNum(eff);
+		else if (n == 9) return "延迟 " + showNum(eff) + " 倍";
+		else if (n == 10) return "延迟 " + showNum(eff) + " 倍";
+		else if (n == 11 || n == 12) return "延迟 " + showNum(eff);
+		else if (n == 13) return "+" + showNum(eff) + " 级";
+		else if (n == 14 || n == 15) return "减少 " + showNum(eff.times(100)) + "%";
 		else return "???";
 	};
 	for (let i = 1; i <= PTH_AMT; i++) {

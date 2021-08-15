@@ -1,5 +1,6 @@
 function calcAcceleration(){
 	tmp.acc = new ExpantaNum(0.1);
+	if (modeActive("reality")) tmp.acc = tmp.acc.div(3.1415926);
 	if (modeActive("hard")) tmp.acc = tmp.acc.div(3);
 	if (modeActive("easy")) tmp.acc = tmp.acc.times(2);
 	if (player.rank.gt(2)) tmp.acc = tmp.acc.times(rank2Eff());
@@ -39,6 +40,9 @@ function calcAcceleration(){
 		);
 	if (modeActive("extreme") && tmp.acc.gte(Number.MAX_VALUE)) tmp.acc = tmp.acc.pow(0.75).times(ExpantaNum.pow(Number.MAX_VALUE, 0.25))
 	if (modeActive("extreme") && tmp.acc.gte("1e10000")) tmp.acc = tmp.acc.sqrt().times(ExpantaNum.sqrt("1e10000"))
+
+	if (modeActive("reality") && tmp.acc.gte("299792458")) tmp.acc = tmp.acc.root(3).times(299792458**(2/3))//faster than light!
+
 	if (extremeStadiumActive("nullum")) tmp.acc = ExpantaNum.pow(10, tmp.acc.log10().times(0.4-0.05*(extremeStadDiffLevel("nullum")-1)))
 	if (modeActive("hikers_dream") && tmp.hd) tmp.acc = tmp.acc.pow(tmp.hd.inclineRed)
 }
@@ -46,6 +50,7 @@ function calcAcceleration(){
 function calcMaxVelocity(){
 	tmp.maxVel = new ExpantaNum(1);
 	if (player.rank.gt(1)) tmp.maxVel = tmp.maxVel.plus(1);
+	if (modeActive("reality")) tmp.maxVel = tmp.maxVel.div(3.1415926);
 	if (modeActive("hard")) tmp.maxVel = tmp.maxVel.div(2);
 	if (modeActive("easy")) tmp.maxVel = tmp.maxVel.times(3);
 	if (player.rank.gt(2)) tmp.maxVel = tmp.maxVel.times(rank2Eff());
@@ -70,6 +75,9 @@ function calcMaxVelocity(){
 	if (extremeStadiumActive("nullum", 2)) tmp.maxVel = ExpantaNum.pow(10, tmp.maxVel.log10().times(0.9-0.02*(extremeStadDiffLevel("nullum")-2)))
 	if (modeActive("hikers_dream") && tmp.hd) tmp.maxVel = tmp.maxVel.pow(tmp.hd.inclineRed)
 	if (mltActive(2)) tmp.maxVel = tmp.maxVel.root(1.3);
+
+
+	if (modeActive("reality") && tmp.maxVel.gte("299792458")) tmp.maxVel = tmp.maxVel.root(3).times(299792458**(2/3))//faster than light!
 }
 
 function calcAccelerationEnergy(){

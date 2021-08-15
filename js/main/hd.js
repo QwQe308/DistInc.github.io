@@ -1,12 +1,12 @@
 const ENERGY_UPG_COSTS = {
-	1: new ExpantaNum(70),
+	1: new ExpantaNum(30),
 	2: new ExpantaNum(100),
-	3: new ExpantaNum(200),
-	4: new ExpantaNum(300),
-	5: new ExpantaNum(140),
-	6: new ExpantaNum(200),
-	7: new ExpantaNum(300),
-	8: new ExpantaNum(2500),
+	3: new ExpantaNum(2000),
+	4: new ExpantaNum(1000),
+	5: new ExpantaNum(1500),
+	6: new ExpantaNum(2500),
+	7: new ExpantaNum(3600),
+	8: new ExpantaNum(25000),
 	9: new ExpantaNum(2800),
 	10: new ExpantaNum(4000),
 	11: new ExpantaNum(6000),
@@ -45,11 +45,12 @@ function getEnergyUpgCost(n){
 }
 
 function getEnergyLossExp(){
-	return modeActive("extreme") ? -10 : -5
+	return modeActive("extreme") ? modeActive("reality") ? -15 : -10 : -5
 }
 
 function getBaseMotiveScalingStart(){
 	let y = ExpantaNum(125)
+	if(modeActive("reality")) y = 100
 	if (tmp.ach) if (tmp.ach[77].has) {
 		y = y.plus(player.rockets.plus(10).log10()) // may be nerfed
 		//prb will be nerfed
@@ -58,9 +59,11 @@ function getBaseMotiveScalingStart(){
 }
 
 function getBaseMotive(){
-	let z = player.rank.plus(1).times(player.tier.plus(1).pow(2)).times(tmp.hd.incline.plus((player.energyUpgs.includes(13)&&tmp.hd.enerUpgs) ? tmp.hd.enerUpgs[13] : 0).div(90).plus(1)).times((player.energyUpgs.includes(28)&&tmp.hd.enerUpgs)?tmp.hd.enerUpgs[28]:1)
+	let z = player.rank.pow(3).times(player.tier.plus(1).pow(4)).times(tmp.hd.incline.plus((player.energyUpgs.includes(13)&&tmp.hd.enerUpgs) ? tmp.hd.enerUpgs[13] : 0).div(90).plus(1)).times((player.energyUpgs.includes(28)&&tmp.hd.enerUpgs)?tmp.hd.enerUpgs[28]:1)
 	let y = getBaseMotiveScalingStart()
-	if (tmp.ach) if (z.gt(y) && modeActive("extreme") && !tmp.ach[87].has) return z.div(y).pow(.5).times(y)
+	if (tmp.ach) if (z.gt(y) && modeActive("extreme") && !tmp.ach[87].has) z = z.div(y).pow(.5).times(y)
+	if (tmp.ach) if (z.gt(y) && modeActive("reality") && !tmp.ach[87].has) z = z.div(y).pow(.65).times(y)
+	
 	return z
 }
 
@@ -87,8 +90,9 @@ function getOptimizationOneEffect(){
 	}
 	if (op1.gt(getOptimizationOneScalingStart()) && modeActive("extreme")) {
 		e = getOptimizationOneScalingStart().logBase(getOptimizationOneScalingStart().log10().times(5))
-		return op1.log10().times(5).pow(e)
+		op1 = op1.log10().times(5).pow(e)
 	}
+	if(modeActive("reality")) if(tmp.ach) if(tmp.ach[13].has) op1 = op1.mul(tmp.hd.motive.div(100).add(1).pow(0.25))
 	return op1
 }
 
@@ -134,6 +138,7 @@ function updateEnergyLoss(){
 		if (tmp.ach) if (tmp.ach[61].has) tmp.hd.energyLoss = tmp.hd.energyLoss.div(Math.max(player.tr.upgrades.length, 1))
 		if (tmp.timeSpeed) if (tmp.timeSpeed.gt(1e20)) tmp.hd.energyLoss = tmp.hd.energyLoss.times(tmp.timeSpeed.log10().div(20))
 	} 
+	if(modeActive("reality")) tmp.hd.energyLoss = tmp.hd.energyLoss.times(25)
 }
 
 function calcEnergyUpgrades(){
@@ -149,6 +154,7 @@ function calcEnergyUpgrades(){
 	
 	tmp.hd.enerUpgs[2] = tmp.hd.motive.max(player.energyUpgs.includes(6)?1:0).plus(1).log10().times(2).plus(1).pow((player.energyUpgs.includes(6)&&tmp.hd.enerUpgs[6]) ? tmp.hd.enerUpgs[6].div(100).plus(1) : 1).pow(tmp.hd.superEnEff2)
 	if (tmp.ach) if (tmp.ach[85].has && modeActive("extreme+hikers_dream")) tmp.hd.enerUpgs[2] = tmp.hd.enerUpgs[2].pow(2)
+	if(modeActive("reality")) tmp.hd.enerUpgs[2] = tmp.hd.enerUpgs[2].mul(2)
 	
 	tmp.hd.enerUpgs[3] = getConfidenceOneEffect()
 	if (tmp.hd.enerUpgs[3].gte(1e24)) tmp.hd.enerUpgs[3] = tmp.hd.enerUpgs[3].log10().pow(1.5).times(1e24/24).min(tmp.hd.enerUpgs[3])
@@ -238,9 +244,13 @@ function updateMotive(){
 	if (player.energyUpgs.includes(3) && tmp.hd.enerUpgs) tmp.hd.totalMotive = tmp.hd.totalMotive.times(tmp.hd.enerUpgs[3])
 	if (player.inf.endorsements.gte(10)) tmp.hd.totalMotive = tmp.hd.totalMotive.times(tmp.hd.superEnEff)
 	if (player.elementary.bosons.scalar.higgs.upgrades.includes("2;2;2") && tmp.hd.enerUpgs != undefined) tmp.hd.totalMotive = tmp.hd.totalMotive.times(tmp.hd.enerUpgs[25] || 1)
-	tmp.hd.motive = tmp.hd.totalMotive.sub(player.spentMotive).sub(player.spentMotiveGens).max(0);
+	tmp.hd.motive = tmp.hd.totalMotive.sub(player.spentMotive).sub(player.spentMotiveGens).add(player.bankedMotive).floor().max(0);
 	if (player.energyUpgs.includes(24)) tmp.hd.motive = tmp.hd.motive.max(tmp.hd.enerUpgs ? tmp.hd.enerUpgs[24] : 0)
-
+	player.motive = tmp.hd.motive
+	if(modeActive("reality")){
+		tmp.hd.totalMotive = tmp.hd.totalMotive.add(player.bankedMotive).floor()
+		//tmp.hd.motive = tmp.hd.motive.add(player.bankedMotive).floor()
+	}
 }
 
 function updateTempHikersDream() {
@@ -295,20 +305,29 @@ function updateTempHikersDream() {
 
 function quickReset() {
 	player.canRefill = true
-	tmp.ranks.layer.reset(true)
+	//tmp.rockets.layer.reset(true)
+	tmp.tiers.layer.reset(true)
+	player.tier = new ExpantaNum(0)
 }
 
 function refillEnergy() {
 	if (!tmp.ach) return
 	if (modeActive('hard') && player.energy.neq(0) && !tmp.ach[85].has) return
 	if (!player.canRefill) return
-	player.energy = new ExpantaNum(100)
+	player.energy = getEnergyLim()
 	player.canRefill = modeActive('hard')
+	if(modeActive("reality")){
+		player.bankedMotive = /*player.bankedMotive.add(*/tmp.hd.totalMotive//)
+		//tmp.tiers.layer.reset(true)
+		//player.motive = new ExpantaNum(0)
+		tmp.hd.motive = new ExpantaNum(0)
+		quickReset();
+	}
 }
 
 function respecEnergyUpgs() {
 	if (player.energyUpgs.length==0) return
-	if (!confirm("Are you sure you want to respec your Energy Upgrades to get your Motive back? This will also perform a Quick Reset.")) return
+	if (!confirm("您确定要洗点能量升级并返还动力吗？这将同时进行一次快速重置。")) return
 	player.spentMotive = new ExpantaNum(0);
 	player.energyUpgs = [];
 	quickReset();
@@ -423,6 +442,7 @@ function showENTab(name) {
 
 function getEnergyLim() {
 	let lim = new ExpantaNum(100)
+	if(tmp.ach) if(tmp.ach[14].has) lim = lim.mul(1.5)
 	if (player.inf.endorsements.gte(10)) {
 		let lvl = player.genLvl
 		if (lvl.gte(6)) lvl = lvl.times(6).sqrt()
@@ -453,7 +473,7 @@ function buyGen() {
 
 function respecGens() {
 	if (player.genLvl.plus(player.geners).eq(1)) return
-	if (!confirm("Are you sure you want to respec The Generators to get your Motive back? This will also perform a Quick Reset.")) return
+	if (!confirm("您确定要洗点发生器并返还动力吗？这将同时进行一次快速重置。")) return
 	player.spentMotiveGens = new ExpantaNum(0);
 	player.genLvl = new ExpantaNum(0);
 	player.geners = new ExpantaNum(1);

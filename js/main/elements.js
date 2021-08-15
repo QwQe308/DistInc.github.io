@@ -3,39 +3,44 @@ function calcModeAndBalanceName(modes) {
 	balanceName = ""
 	// Naming order: Absurd AAU/NA Easy (or Easy-) Hard/Extreme Dream
 	if(modes.includes("absurd")) {
-		modeName += "Absurd ";
+		modeName += "荒诞 ";
 		balanceName += "absurd_";
 	}
 	if (modes.includes("aau")) {
-		if(modes.includes("na")) modeName += "AAU/";
-		else modeName += "AAU ";
+		if(modes.includes("na")) modeName += "全成就/";
+		else modeName += "全成就 ";
 		balanceName += "aau_";
 	}
 	if (modes.includes("na")) {
-		modeName += "NA ";
+		modeName += "无成就 ";
 		balanceName += "na_";
 	}
 	if (modes.includes("easy")) {
-		if (modes.includes("hard")) modeName += "Easy-";
-		else modeName += "Easy ";
+		if (modes.includes("hard")) modeName += "容易-";
+		else modeName += "容易";
 		balanceName += "easy_";
 	}	
 	if (modes.includes("hard")) {
 		if (modes.includes("extreme")) {
-			modeName += "Extreme ";
+			modeName += "极限";
 			balanceName += "extreme_";
 		} else {
-			modeName += "Hard ";
+			modeName += "困难";
 			balanceName += "hard_";
 		}
 		}	
 	if (modes.includes("hikers_dream")) {
-		if(!modes.includes("easy") && !modes.includes("hard")) modeName += "Hikers ";
-		modeName += "Dream";
+		if(!modes.includes("easy") && !modes.includes("hard")) modeName += "旅人";
+		modeName += "之梦";
 		balanceName += "hikers_dream_";
 	}
+	if (modes.includes("reality")) {
+		if (modes.includes("easy") || modes.includes("aau")) modeName = "伪现实";
+		else modeName = "现实";
+		balanceName += "reality_";
+	}	
 	if(balanceName != "") balanceName = balanceName.substring(0,balanceName.length -1);
-	if(modeName == "") modeName = "Normal";
+	if(modeName == "") modeName = "普通";
 	return {modeName: modeName, balanceName: balanceName}
 }
 
@@ -45,7 +50,7 @@ function updateModesHTML() {
 	
 	let data = calcModeAndBalanceName(modesSelected);
 
-	tmp.el.selectedMode.setTxt("Selected Mode: "+(data.modeName));
+	tmp.el.selectedMode.setTxt("选择模式："+(data.modeName));
 	tmp.el.selectedModeBalancing.setTxt("Balancing: "+ (MODEBALANCES[data.balanceName]?MODEBALANCES[data.balanceName].balancing:"Unknown! Proceed at your own risk."));
 }
 
@@ -53,7 +58,7 @@ function updateOptionsHTML(){
 	if (player.tab == "options") {
 		if (player.options.modeComboTableActive) {
 			let data = MODE_TABLE_DATA;
-			tmp.el.modeComboCompletions.setTxt("Completions: "+completedModeCombos.length+"/"+Object.keys(MODEBALANCES).length)
+			tmp.el.modeComboCompletions.setTxt("完成情况："+completedModeCombos.length+"/"+Object.keys(MODEBALANCES).length)
 			for (let r=0;r<data.left.length;r++) {
 				for (let c=0;c<data.top.length;c++) {
 					let o = data.left[r][0].concat(data.top[c][0]);
@@ -118,26 +123,38 @@ function updatePreRanksHTML(){
 	);
 	tmp.el.velocity.setTxt(
 		formatDistance(player.velocity.times(modeActive("hikers_dream")?tmp.hd.enEff:1)) +
-			"/s " + formatGain(player.velocity.times(modeActive("hikers_dream")?tmp.hd.enEff:1), tmp.acc.times(nerfActive("noTS") ? 1 : tmp.timeSpeed), "vel", true)
+			"/秒 " + formatGain(player.velocity.times(modeActive("hikers_dream")?tmp.hd.enEff:1), tmp.acc.times(nerfActive("noTS") ? 1 : tmp.timeSpeed), "vel", true)
 	);
 	tmp.el.maxVel.setTxt(formatDistance(tmp.maxVel));
 	tmp.el.acceleration.setTxt(formatDistance(tmp.acc));
 }
 
 function updateRanksHTML(){
+	let chs = "";
+	chs = getScalingName("rank");
+	chs = chs.replace("Scaled","折算");
+	chs = chs.replace("Superscaled","超级折算");
+	chs = chs.replace("Hyper","究级折算");
+	chs = chs.replace("Atomic","原子折算");
 	tmp.el.rank.setTxt(showNum(player.rank));
 	tmp.el.rankUp.setClasses({ btn: true, locked: !tmp.ranks.canRankUp });
 	tmp.el.rankDesc.setTxt(tmp.ranks.desc);
 	tmp.el.rankReq.setTxt(formatDistance(tmp.ranks.req));
-	tmp.el.rankName.setTxt(getScalingName("rank") + "Rank");
+	tmp.el.rankName.setTxt(chs + "级别");
 }
 
 function updateTiersHTML(){
+	let chs = "";
+	chs = getScalingName("tier");
+	chs = chs.replace("Scaled","折算");
+	chs = chs.replace("Superscaled","超级折算");
+	chs = chs.replace("Hyper","究级折算");
+	chs = chs.replace("Atomic","原子折算");
 	tmp.el.tier.setTxt(showNum(player.tier));
 	tmp.el.tierUp.setClasses({ btn: true, locked: !tmp.tiers.canTierUp });
 	tmp.el.tierDesc.setTxt(tmp.tiers.desc);
 	tmp.el.tierReq.setTxt(showNum(tmp.tiers.req.ceil()));
-	tmp.el.tierName.setTxt(getScalingName("tier") + "Tier");
+	tmp.el.tierName.setTxt(chs + "阶层");
 }
 
 function updateMainHTML(){
@@ -146,14 +163,14 @@ function updateMainHTML(){
 		updateRanksHTML()		
 		updateTiersHTML()
 		// Misc
-		tmp.el.mvName.setTxt(nerfActive("maxVelActive") ? "Maximum Velocity:" : "Velocital Energy:");
-		tmp.el.accEn.setHTML(tmp.accEn.gt(0) ? " (Accelerational Energy: " + formatDistance(tmp.accEn) + "/s<sup>2</sup>)" : "");
+		tmp.el.mvName.setTxt(nerfActive("maxVelActive") ? "最大速度：" : "速度能量：");
+		tmp.el.accEn.setHTML(tmp.accEn.gt(0) ? " (加速能量：" + formatDistance(tmp.accEn) + "/秒<sup>2</sup>)" : "");
 		
 		// Hiker's Dream
 		let t = ""
 		if (modeActive("hikers_dream")){
-			let start = tmp.hd.incline.gt(89.999) ? "The secant of your incline is: " + showNum(tmp.hd.secant) : "Current Incline: "+showNum(tmp.hd.incline)+"&deg;"
-			t = start + ((tmp.hd.inclineRed.gt(0)&&tmp.hd.inclineRed.lt(0.001))?(", bringing Acceleration & Maximum Velocity to the "+showNum(tmp.hd.inclineRed.pow(-1))+"th root"):(", raising Acceleration & Maximum Velocity ^"+showNum(tmp.hd.inclineRed)))+", and making Energy loss "+showNum(tmp.hd.inclineRed.pow(getEnergyLossExp()))+"x faster.<br>"
+			let start = tmp.hd.incline.gt(89.999) ? "斜度的正割为：" + showNum(tmp.hd.secant) : "目前斜度："+showNum(tmp.hd.incline)+"&deg;"
+			t = start + ((tmp.hd.inclineRed.gt(0)&&tmp.hd.inclineRed.lt(0.001))?("，使加速能量和最大速度变为"+showNum(tmp.hd.inclineRed.pow(-1))+"次方根"):("，使加速度和最大速度变为^"+showNum(tmp.hd.inclineRed)))+"，而且使能量损耗变为 "+showNum(tmp.hd.inclineRed.pow(getEnergyLossExp()))+" 倍。<br>"
 		}
 		tmp.el.incline.setHTML(t)
 		tmp.el.quickReset.setDisplay(modeActive("hikers_dream"))
@@ -162,12 +179,18 @@ function updateMainHTML(){
 
 function updateRocketsHTML(){
 	if (player.tab == "rockets") {
+		let chs = "";
+		chs = getScalingName("rf");
+		chs = chs.replace("Scaled","折算");
+		chs = chs.replace("Superscaled","超级折算");
+		chs = chs.replace("Hyper","究级折算");
+		chs = chs.replace("Atomic","原子折算");
 		// Rockets
 		tmp.el.rocketReset.setClasses({ btn: true, locked: !tmp.rockets.canRocket, rckt: tmp.rockets.canRocket });
 		tmp.el.rocketGain.setTxt(showNum(tmp.rockets.layer.gain));
 		tmp.el.rocketsAmt.setTxt(
 			showNum(player.rockets) +
-				" rockets " +
+				" 火箭 " +
 				(((tmp.ach[95].has||hasCollapseMilestone(9))&&!nerfActive("noRockets")) ? formatGain(player.rockets, tmp.rockets.layer.gain.div(tmp.ach[95].has?1:100)) : "")
 		);
 		tmp.el.rocketsEff.setTxt(showNum(getRocketEffect()));
@@ -177,7 +200,7 @@ function updateRocketsHTML(){
 		tmp.el.rfReset.setClasses({ btn: true, locked: !tmp.rf.can, rckt: tmp.rf.can });
 		tmp.el.rfReq.setTxt(showNum(tmp.rf.req));
 		tmp.el.rfEff.setTxt(showNum(getFuelEff().sub(1).times(100)));
-		tmp.el.rfName.setTxt(getScalingName("rf") + "Rocket Fuel");
+		tmp.el.rfName.setTxt(chs + "火箭燃料");
 		tmp.el.rf2.setTxt(showNum(getFuelEff2()));
 	}
 }
@@ -211,11 +234,11 @@ function updateAchievementsHTML(){
 function updateRobotsHTML(){
 	tmp.el.scraps.setTxt(
 		showNum(player.automation.scraps) +
-			" scraps " + formatGain(player.automation.scraps, getScrapGain().times(nerfActive("noTS") ? 1 : tmp.timeSpeed), "scraps")
+			" 碎屑 " + formatGain(player.automation.scraps, getScrapGain().times(nerfActive("noTS") ? 1 : tmp.timeSpeed), "scraps")
 	);
 	tmp.el.intAmt.setTxt(
 		showNum(player.automation.intelligence) +
-			" intelligence " + formatGain(player.automation.intelligence, getIntelligenceGain().times(nerfActive("noTS") ? 1 : tmp.timeSpeed), "intel")
+			" 智慧 " + formatGain(player.automation.intelligence, getIntelligenceGain().times(nerfActive("noTS") ? 1 : tmp.timeSpeed), "intel")
 	);
 	for (let i = 0; i < Object.keys(ROBOT_REQS).length; i++) {
 		tmp.el[Object.keys(ROBOT_REQS)[i]].setTxt(tmp.auto[Object.keys(ROBOT_REQS)[i]].btnTxt);
@@ -248,12 +271,12 @@ function updateRobotsHTML(){
 	tmp.el.buyRobotInterval.setHTML(
 		player.automation.open == "none"
 			? ""
-			: "Upgrade Interval<br>Cost: " + showNum(tmp.auto[player.automation.open].intCost) + " intelligence."
+			: "Upgrade Interval<br>花费： " + showNum(tmp.auto[player.automation.open].intCost) + " 智慧。"
 	);
 	tmp.el.buyRobotMagnitude.setHTML(
 		player.automation.open == "none"
 			? ""
-			: "Upgrade Magnitude<br>Cost: " + showNum(tmp.auto[player.automation.open].magCost) + " intelligence."
+			: "Upgrade Magnitude<br>花费： " + showNum(tmp.auto[player.automation.open].magCost) + " 智慧。"
 	);
 	if (player.automation.open != "none") {
 		tmp.el.buyRobotInterval.setClasses({
@@ -288,7 +311,7 @@ function updateTimeReversalHTML(){
 		tmp.el.rt.setTxt(tmp.tr.txt);
 		tmp.el.tc.setTxt(
 			showNum(player.tr.cubes) +
-				" Time Cubes " + formatGain(player.tr.cubes, getTimeCubeGain().times(nerfActive("noTS") ? 1 : tmp.timeSpeed), "tc")
+				" 时间方盒 " + formatGain(player.tr.cubes, getTimeCubeGain().times(nerfActive("noTS") ? 1 : tmp.timeSpeed), "tc")
 		);
 		tmp.el.frf.setTxt(showNum(tmp.tr.eff));
 		for (let i = 1; i <= TR_UPG_AMT; i++) {
@@ -297,9 +320,9 @@ function updateTimeReversalHTML(){
 			if (!tr2Pow().eq(1) && i == 2) desc += "<span class='grossminitxt'>(^" + showNum(tr2Pow()) + ")</span>";
 			if (!tr11Pow().eq(1) && i == 11)
 				desc += "<span class='grossminitxt'>(^" + showNum(tr11Pow()) + ")</span>";
-			tmp.el["tr" + i].setHTML(desc + "<br>Cost: " + showNum(upg.cost()) + " Time Cubes.");
+			tmp.el["tr" + i].setHTML(desc + "<br>花费： " + showNum(upg.cost()) + " 时间方盒。");
 			if (upg.current !== undefined && (i > 15 ? modeActive("extreme") : true))
-				tmp.el["tr" + i].setTooltip("Currently: " + upg.disp(upg.current()));
+				tmp.el["tr" + i].setTooltip("目前： " + upg.disp(upg.current()));
 			tmp.el["tr" + i].setClasses({
 				btn: true,
 				locked: !player.tr.upgrades.includes(i) && player.tr.cubes.lt(upg.cost()),
@@ -322,7 +345,7 @@ function updateCollpaseHTML(){
 		tmp.el.cadavers.setHTML(
 			"<span class='dead'>" +
 				showNum(player.collapse.cadavers) +
-				"</span> cadavers<span class='dead'> " +
+				"</span> 残骸<span class='dead'> " +
 				(((tmp.ach[96].has||tmp.inf.upgs.has("2;4"))&&!nerfActive("noCadavers"))?(formatGain(player.collapse.cadavers, tmp.collapse.layer.gain.div(tmp.ach[96].has?1:100))):"")+
 				"</span>"
 		);
@@ -335,13 +358,13 @@ function updateCollpaseHTML(){
 		tmp.el.lifeEssence.setHTML(
 			"<span class='alive'>" +
 				showNum(player.collapse.lifeEssence) +
-				"</span> life essence <span class='alive'>" +
+				"</span> 生命精华 <span class='alive'>" +
 				(((tmp.ach[97].has||tmp.inf.upgs.has("5;3"))&&!nerfActive("noLifeEssence"))?formatGain(player.collapse.lifeEssence, player.collapse.cadavers.times(tmp.collapse.sacEff).max(1).div(tmp.ach[97].has?1:100)):"")+"</span>"
 		);
 		for (let i = 1; i <= EM_AMT; i++) {
 			let ms = ESSENCE_MILESTONES[i];
-			tmp.el["lem" + i].setHTML(ms.desc + "<br>Req: " + showNum(ms.req) + " Life Essence.");
-			if (ms.disp !== undefined) tmp.el["lem" + i].setTooltip("Currently: " + ms.disp());
+			tmp.el["lem" + i].setHTML(ms.desc + "<br>需要： " + showNum(ms.req) + " 生命精华。");
+			if (ms.disp !== undefined) tmp.el["lem" + i].setTooltip("目前： " + ms.disp());
 			tmp.el["lem" + i].setClasses({ msCont: true, r: !hasCollapseMilestone(i) });
 		}
 	}
@@ -349,6 +372,12 @@ function updateCollpaseHTML(){
 
 function upadtePathogenUpgradesHTML(){
 	for (let i = 1; i <= PTH_AMT; i++) {
+		let chs = "";
+		chs = getScalingName("pathogenUpg", i);
+		chs = chs.replace("Scaled","折算");
+		chs = chs.replace("Superscaled","超级折算");
+		chs = chs.replace("Hyper","究级折算");
+		chs = chs.replace("Atomic","原子折算");
 		let hidden = PTH_UPGS[i].unl ? !PTH_UPGS[i].unl() : false;
 		tmp.el["pth" + i].setDisplay(!hidden);
 		tmp.el["pth" + i].setClasses({
@@ -359,18 +388,18 @@ function upadtePathogenUpgradesHTML(){
 		tmp.el["pth" + i].setHTML(
 			PTH_UPGS[i].desc +
 				"<br>" +
-				getScalingName("pathogenUpg", i) +
-				"Level: " +
+				chs +
+				"等级： " +
 				showNum(player.pathogens.upgrades[i]) +
 				(tmp.pathogens.extra(i).gt(0) ? " + " + showNum(tmp.pathogens.extra(i)) : "") +
-				"<br>Currently: " +
+				"<br>目前： " +
 				tmp.pathogens.disp(i) +
 				(player.pathogens.upgrades[i].gte(getPathogenUpgSoftcapStart(i))
-					? "<span class='sc'>(softcapped)</span>"
+					? "<span class='sc'>(已达软上限)</span>"
 					: "") +
-				"<br>Cost: " +
+				"<br>花费： " +
 				showNum(tmp.pathogens[i].cost) +
-				" Pathogens."
+				" 病原体。"
 		);
 	}
 }
@@ -380,20 +409,20 @@ function upadtePathogenHTML(){
 		tmp.el.pathogensAmt.setHTML(
 			"<span class='grosstxt'>" +
 				showNum(player.pathogens.amount) +
-				"</span> Pathogens <span class='grosstxt'>" +
+				"</span> 病原体 <span class='grosstxt'>" +
 				formatGain(player.pathogens.amount, tmp.pathogens.gain, "pathogens") +
 				"</span>"
 		);
 		upadtePathogenUpgradesHTML()
 		tmp.el.pthUpgPow.setHTML(
-			!tmp.pathogens.upgPow.eq(1) ? ("Upgrade Power: " + showNum(tmp.pathogens.upgPow.times(100)) + "%"+(tmp.pathogens.upgPow.gte(10)?" <span class='sc'>(softcapped)</span>":"")+"<br>") : ""
+			!tmp.pathogens.upgPow.eq(1) ? ("升级效果：" + showNum(tmp.pathogens.upgPow.times(100)) + "%"+(tmp.pathogens.upgPow.gte(10)?" <span class='sc'>(已达软上限)</span>":"")+"<br>") : ""
 		);
 		tmp.el.tdeEff.setHTML(
 			tmp.ach[63].has
-				? "Time Doesn't Exist multiplier: " +
+				? "时骨无存倍率：" +
 					showNum(ach63Eff()) +
-					"x " +
-					(ach63Eff().gte(ach63SC()) ? "<span class='sc'>(softcapped)</span>" : "") +
+					" 倍 " +
+					(ach63Eff().gte(ach63SC()) ? "<span class='sc'>(已达软上限)</span>" : "") +
 					"<br><br>"
 				: ""
 		);
@@ -404,53 +433,59 @@ function updateSoftcapsHTML(){
 	for (let i = 0; i < Object.keys(tmp.sc).length; i++) {
 		let name = Object.keys(tmp.sc)[i];
 		let reached = Object.values(tmp.sc)[i];
-		tmp.el[name + "SC"].setTxt(reached ? "(softcapped)" : "");
+		tmp.el[name + "SC"].setTxt(reached ? "(已达软上限)" : "");
 		tmp.el[name + "SC"].setClasses({ sc: true });
 	}
 }
 
 function updateDarkCircleRssHTML(){
 	tmp.el.darkMatter.setHTML(
-		"Dark Matter<br>Amount: " +
+		"Dark Matter<br>数量： " +
 			showNum(player.dc.matter) +
-			"<br>Gain: " +
+			"<br>获取量： " +
 			formatGain(player.dc.matter, tmp.dc.dmGain, "dc", false, tmp.dc.flow) +
-			"<br>Effect: You gain " +
+			"<br>效果：多获取 " +
 			showNum(tmp.dc.dmEff) +
-			"x as many Rockets."
+			" 倍火箭。"
 	);
 	tmp.el.darkEnergy.setHTML(
-		"Dark Energy<br>Amount: " +
+		"Dark Energy<br>数量： " +
 			showNum(player.dc.energy) +
-			"<br>Gain: " +
+			"<br>获取量： " +
 			formatGain(player.dc.energy, tmp.dc.deGain, "dc", false, tmp.dc.flow) +
-			"/s<br>Effect: You gain " +
+			"<br>效果：多获取 " +
 			showNum(tmp.dc.deEff) +
-			"x as many Time Cubes."
+			" 倍时间方盒。"
 	);
 	tmp.el.darkFluid.setHTML(
-		"Dark Fluid<br>Amount: " +
+		"Dark Fluid<br>数量： " +
 			showNum(player.dc.fluid) +
-			"<br>Gain: " +
+			"<br>获取量： " +
 			formatGain(player.dc.fluid, tmp.dc.dfGain, "dc", false, tmp.dc.flow) +
-			"/s<br>Effect: Scaled Rocket Fuel scaling starts " +
+			"<br>效果：折算的火箭燃料延迟 " +
 			showNum(tmp.dc.dfEff) +
-			" Rocket Fuel later."
+			" 火箭燃料出现。"
 	);
 }
 
 function updateDarkCircleHTML(){
 	if (player.tab == "dc") {
+		let chs = "";
+		chs = getScalingName("darkCore");
+		chs = chs.replace("Scaled","折算");
+		chs = chs.replace("Superscaled","超级折算");
+		chs = chs.replace("Hyper","究级折算");
+		chs = chs.replace("Atomic","原子折算");
 		updateDarkCircleRssHTML()
 		tmp.el.darkCore.setHTML(
-			getScalingName("darkCore") +
-				"Dark Cores<br>Amount: " +
+			chs +
+				"黑暗核心<br>数量： " +
 				showNum(player.dc.cores) +
-				"<br>Cost: " +
+				"<br>花费： " +
 				showNum(tmp.dc.coreCost) +
-				" Cadavers" +
+				" 残骸" +
 				(tmp.dc.coreEff.gt(0)
-					? "<br>Effect: +" + showNum(tmp.dc.coreEff.times(100)) + "% Pathogen Upgrade Power"
+					? "<br>效果：+" + showNum(tmp.dc.coreEff.times(100)) + "%病原体升级的效果"
 					: "")
 		);
 		tmp.el.darkMatter.setClasses({darkcircle: true, dcAnim: player.options.dcPulse})
@@ -474,7 +509,7 @@ function updateInfinityEndorsementStuffHTML(){
 	tmp.el.emInner.setHTML(
 		tmp.inf.stadium.canComplete
 			? "Complete this Stadium challenge."
-			: 'Allow <span class="infinity">Infinity</span> to endorse you.'
+			: '允许 <span class="infinity">Infinity</span> 认可您。'
 	);
 	let nextUnl;
 	for (let i=0;i<Object.keys(INF_UPGS.dispReqs).length;i++) {
@@ -484,7 +519,7 @@ function updateInfinityEndorsementStuffHTML(){
 			break;
 		}
 	}
-	tmp.el.nextIUs.setTxt(nextUnl ? ("Next set of Infinity Upgrades at Endorsement "+showNum(INF_UPGS.dispReqs[nextUnl])+".") : "")
+	tmp.el.nextIUs.setTxt(nextUnl ? ("到达认可 "+showNum(INF_UPGS.dispReqs[nextUnl])+" 后可解锁下一组无限升级。") : "")
 	tmp.el.forceInf.setDisplay(player.inf.endorsements.gte(10));
 }
 
@@ -517,7 +552,7 @@ function updateInfinitySubtabHTML(){
 		
 		let ach112 = ach112Eff()
 		tmp.el.tudeEff.setHTML(
-			tmp.ach[112].has ? "The Universe Doesn't Exist multiplier: " + showNum(ach112) + "x"+(ach112.gte(1e160)?" <span class='sc'>(softcapped)</span>":"")+"<br><br>" : ""
+			tmp.ach[112].has ? "宇之不存倍率：" + showNum(ach112) + " 倍"+(ach112.gte(1e160)?" <span class='sc'>(已达软上限)</span>":"")+"<br><br>" : ""
 		);
 	}
 }
@@ -533,13 +568,13 @@ function updateAscensionHTML(){
 				});
 				tmp.el["perk" + i].setHTML(
 					capitalFirst(PERK_NAMES[i - 1]) +
-						" Perk" +
-						(tmp.inf.asc.perkActive(i) ? (": " + formatTime(player.inf.ascension.time[i - 1])+(player.automators["perks"]?"":"<br>(click to disable)")) : "")
+						"特权" +
+						(tmp.inf.asc.perkActive(i) ? (": " + formatTime(player.inf.ascension.time[i - 1])+(player.automators["perks"]?"":"<br>(点击以取消)")) : "")
 				);
 				tmp.el["perkEff" + i].setTxt(showNum(tmp.inf.asc.perkEff(i)));
 				tmp.el["enl" + i].setTxt(showNum(player.inf.ascension.enlightenments[i - 1]));
 				tmp.el["enleff" + i].setTxt(showNum(tmp.inf.asc.enlEff(i).times(100)));
-				tmp.el["buyEnl" + i].setTxt("Cost: " + showNum(tmp.inf.asc.enlCost(i)) + " Ascension Power");
+				tmp.el["buyEnl" + i].setTxt("花费： " + showNum(tmp.inf.asc.enlCost(i)) + " 飞升能量");
 				tmp.el["buyEnl" + i].setClasses({
 					btn: true,
 					inf: player.inf.ascension.power.gte(tmp.inf.asc.enlCost(i)),
@@ -548,14 +583,14 @@ function updateAscensionHTML(){
 				let name = getScalingName("enlightenments", i);
 				tmp.el["enlScale" + i].setTxt(name == "" ? "" : name + " ");
 			}
-			tmp.el.perkPower.setTxt("Perk Strength: " + showNum(tmp.inf.asc.perkStrength.times(100)) + "%");
+			tmp.el.perkPower.setTxt("特权效果：" + showNum(tmp.inf.asc.perkStrength.times(100)) + "%");
 			tmp.el.perkPower.setDisplay(!tmp.inf.asc.perkStrength.eq(1));
 			tmp.el.ascPower.setHTML(
-				"Ascension Power: <span style='font-size: 25px; color: red;'>" +
+				"飞升能量： <span style='font-size: 25px; color: red;'>" +
 					showNum(player.inf.ascension.power) +
 					"</span> "+formatGain(player.inf.ascension.power, tmp.inf.asc.powerGain, "ascension")
 			);
-			tmp.el.perkAccel.setHTML(tmp.elm.pa.active?("Your "+(tmp.elm.pa.state==""?"":(capitalFirst(tmp.elm.pa.state)+" "))+"Perk Accelerator is making Perks be used up <span style='font-size: 25px; color: red;'>"+showNum(tmp.elm.pa.speedBoost)+"</span>x as fast, but in return, your Perks are <span style='font-size: 25px; color: red;'>"+showNum(tmp.elm.pa.boost)+"</span>x as strong."):"")
+			tmp.el.perkAccel.setHTML(tmp.elm.pa.active?("您"+(tmp.elm.pa.state==""?"":(capitalFirst(tmp.elm.pa.state)))+"的特权加速器使特权的时间流逝速度变为 <span style='font-size: 25px; color: red;'>"+showNum(tmp.elm.pa.speedBoost)+"</span> 倍，但同时特权的效果也变为原来的 <span style='font-size: 25px; color: red;'>"+showNum(tmp.elm.pa.boost)+"</span> 倍。"):"")
 		}
 }
 
@@ -580,16 +615,16 @@ function updateNormalStadiumHTML(){
 		let data = mltRewardActive(1)?MLT_1_STADIUM_REWARDS:STADIUM_REWARDS
 		let showCurrent = data.effects[name] !== undefined;
 		tmp.el[name + "Btm"].setHTML(
-			"Goal: " +
+			"目标： " +
 				formatDistance(tmp.inf.stadium.goal(name)) +
-				"<br>Reward: " +
+				"<br>奖励: " +
 				data[name] +
 				"<br>" +
-				(showCurrent ? "Currently: " + data.disp[name]() : "")
+				(showCurrent ? "目前: " + data.disp[name]() : "")
 		);
 	}
 	tmp.el.exitStad.setDisplay(player.inf.stadium.current != "");
-	tmp.el.stadiumProg.setTxt(player.inf.stadium.current==""?"":"Progress to Completion: "+showNum(tmp.inf.stadium.progress())+"%")
+	tmp.el.stadiumProg.setTxt(player.inf.stadium.current==""?"":"完成进度的比例："+showNum(tmp.inf.stadium.progress())+"%")
 }
 
 function updateExtremeStadiumHTML(){
@@ -615,12 +650,12 @@ function updateExtremeStadiumHTML(){
 			});
 			let showCurrent = EXTREME_STADIUM_DATA[name].effect !== undefined;
 			tmp.el[name + "Btm"].setHTML(
-				"Goal: " +
+				"目标： " +
 					formatDistance(extremeStadiumGoal(name)) + // extremeStadiumGoal
-					"<br>Reward: " +
+					"<br>奖励： " +
 					EXTREME_STADIUM_DATA[name].reward +
 					"<br>" +
-					(showCurrent ? "Currently: " + EXTREME_STADIUM_DATA[name].disp() : "")
+					(showCurrent ? "目前： " + EXTREME_STADIUM_DATA[name].disp() : "")
 			);
 		}
 	}
@@ -630,16 +665,16 @@ function updateExtremeStadiumHTML(){
 function updatePurgeHTML(){
 	tmp.el.purgeDiv.setDisplay(player.inf.pantheon.purge.unl);
 	tmp.el.purgeBtn.setTxt(
-		HCCBA("purge")?"Trapped in Purge":(player.inf.pantheon.purge.active
-			? "Exit Purge run" +
+		HCCBA("purge")?"强制进行净化":(player.inf.pantheon.purge.active
+			? "退出净化" +
 				(tmp.inf.pantheon.purgeGain.gt(0)
-					? " for " + showNum(tmp.inf.pantheon.purgeGain) + " Purge Power."
-					: ". You need " +
+					? "并获得 " + showNum(tmp.inf.pantheon.purgeGain) + " 净化能量。"
+					: "。您需要到达 " +
 					formatDistance(tmp.inf.pantheon.purgeNext) +
-					" to gain more Purge Power.")
-			: "Start Purge run")
+					" 后才能获得更多净化能量。")
+			: "进行净化")
 	);
-	tmp.el.purgePower.setTxt(showNum(player.inf.pantheon.purge.power)+(player.inf.pantheon.purge.power.gte(600)?(" (softcapped)"):""));
+	tmp.el.purgePower.setTxt(showNum(player.inf.pantheon.purge.power)+(player.inf.pantheon.purge.power.gte(600)?(" (已达软上限)"):""));
 	tmp.el.purgePowerEff.setTxt(showNum(tmp.inf.pantheon.ppe));
 }
 
@@ -669,11 +704,11 @@ function updateAngelsChipsHTML(){
 	tmp.el.chipGain.setTxt(formatGain(player.inf.pantheon.heavenlyChips, tmp.inf.pantheon.chipGain, "heavenlyChips"));
 	tmp.el.chipBoost.setTxt(showNum(tmp.inf.pantheon.chipBoost.sub(1).times(100)));
 	let mltr5 = mltRewardActive(5)
-	tmp.el.soulNerf.setHTML(mltr5?("multiply by <span class='spectral'>"+showNum(player.inf.pantheon.demonicSouls.pow(tmp.inf.pantheon.ppe.times(-1)).plus(1))+"</span>"):("divide by <span class='spectral'>"+showNum(player.inf.pantheon.demonicSouls.pow(tmp.inf.pantheon.ppe).plus(1))+"</span>"))
+	tmp.el.soulNerf.setHTML(mltr5?("乘以 <span class='spectral'>"+showNum(player.inf.pantheon.demonicSouls.pow(tmp.inf.pantheon.ppe.times(-1)).plus(1))+"</span>"):("除以 <span class='spectral'>"+showNum(player.inf.pantheon.demonicSouls.pow(tmp.inf.pantheon.ppe).plus(1))+"</span>"))
 	tmp.el.souls.setTxt(showNum(player.inf.pantheon.demonicSouls));
 	tmp.el.soulGain.setTxt(formatGain(player.inf.pantheon.demonicSouls, tmp.inf.pantheon.soulGain, "demonicSouls"));
 	tmp.el.soulBoost.setTxt(showNum(tmp.inf.pantheon.soulBoost.sub(1).times(100)));
-	tmp.el.chipNerf.setHTML(mltr5?("multiply by <span class='spectral'>"+showNum(player.inf.pantheon.heavenlyChips.pow(tmp.inf.pantheon.ppe.times(-1)).plus(1))+"</span>"):("divide by <span class='spectral'>"+showNum(player.inf.pantheon.heavenlyChips.pow(tmp.inf.pantheon.ppe).plus(1))+"</span>"))
+	tmp.el.chipNerf.setHTML(mltr5?("乘以 <span class='spectral'>"+showNum(player.inf.pantheon.heavenlyChips.pow(tmp.inf.pantheon.ppe.times(-1)).plus(1))+"</span>"):("除以 <span class='spectral'>"+showNum(player.inf.pantheon.heavenlyChips.pow(tmp.inf.pantheon.ppe).plus(1))+"</span>"))
 	tmp.el.phantomDiv.setDisplay(mltr5);
 	if (mltr5) {
 		tmp.el.phantoms.setTxt(showNum(tmp.inf.pantheon.phantoms));
@@ -685,6 +720,12 @@ function updateAngelsChipsHTML(){
 }
 
 function updateDerivativeHTML(){
+	let chs = "";
+	chs = getScalingName("dervBoost");
+	chs = chs.replace("Scaled","折算");
+	chs = chs.replace("Superscaled","超级折算");
+	chs = chs.replace("Hyper","究级折算");
+	chs = chs.replace("Atomic","原子折算");
 	let de = getDervNames();
 	for (let i = 0; i < de.length; i++) {
 		let name = de[i];
@@ -692,16 +733,16 @@ function updateDerivativeHTML(){
 		tmp.el["derv" + name].setTxt(formatDistance(tmp.inf.derv.amt(name)));
 		tmp.el["dervgain" + name].setTxt(formatGain(tmp.inf.derv.amt(name), tmp.inf.derv.gain(name), "derv", true));
 	}
-	let dervName = player.inf.derivatives.unlocks.gte(tmp.inf.derv.maxShifts) ? "Boosts" : "Shifts";
+	let dervName = player.inf.derivatives.unlocks.gte(tmp.inf.derv.maxShifts) ? "提升" : "变换";
 	tmp.el.dervUnlock.setHTML(
-		getScalingName("dervBoost") +
-			" Derivative " +
+		chs +
+			"导数" +
 			dervName +
 			" (" +
 			showNum(player.inf.derivatives.unlocks) +
-			")<br>Cost: " +
+			")<br>花费： " +
 			showNum(tmp.inf.derv.unlCost) +
-			" Knowledge"
+			" 知识"
 	);
 	tmp.el.dervUnlock.setClasses({
 		btn: true,
@@ -736,19 +777,25 @@ function updateAllInfinityHTML(){
 }
 
 function updateRankCheapenersHTML(){
+	let chs = "";
+	chs = getScalingName("rankCheap");
+	chs = chs.replace("Scaled","折算");
+	chs = chs.replace("Superscaled","超级折算");
+	chs = chs.replace("Hyper","究级折算");
+	chs = chs.replace("Atomic","原子折算");
 	tmp.el.rankCheap.setTxt(
 		showNum(player.rankCheap) + (tmp.rankCheap.free.eq(0) ? "" : " + " + showNum(tmp.rankCheap.free))
 	);
 	tmp.el.rankCheapUp.setClasses({ btn: true, locked: !tmp.rankCheap.can });
 	tmp.el.rankCheapReq.setTxt(formatDistance(tmp.rankCheap.req));
-	tmp.el.rankCheapName.setTxt(getScalingName("rankCheap") + "Rank Cheapener");
+	tmp.el.rankCheapName.setTxt(chs + "级别降价器");
 }
 
 function updateNormalFurnace(){
 	if (fnTab=="nfn") {
 		tmp.el.coal.setTxt(
 			showNum(player.furnace.coal) +
-				" Coal " + formatGain(player.furnace.coal, tmp.fn.gain, "fn")
+				" 煤 " + formatGain(player.furnace.coal, tmp.fn.gain, "fn")
 		);
 		tmp.el.coalEff.setTxt(showNum(tmp.fn.eff));
 		for (let i = 1; i <= 5; i++) {
@@ -788,7 +835,7 @@ function updateNormalFurnace(){
 function updateEnhanceFurnace(){
 	if (fnTab=="efn") {
 		tmp.el.eCoal.setTxt(
-			showNum(player.furnace.enhancedCoal) + " Enhanced Coal " + formatGain(player.furnace.enhancedCoal, tmp.fn.enh.gain, "fn")
+			showNum(player.furnace.enhancedCoal) + " 强化煤 " + formatGain(player.furnace.enhancedCoal, tmp.fn.enh.gain, "fn")
 		);
 		tmp.el.eCoalEff.setTxt(showNum(tmp.fn.enh.eff));
 		tmp.el.eCoalEff2.setTxt(showNum(tmp.fn.enh.eff2))
@@ -834,7 +881,7 @@ function updateMagma() {
 		tmp.el.magmaReformReq.setTxt(showNum(req2));
 		tmp.el.magmaReformReq2.setTxt(showNum(req2b));
 		tmp.el.rMagmaAmt.setTxt(showNum(player.magma.ref));
-		tmp.el.rMagmaEff.setHTML("<span class='magmaTxt'>"+showNum(tmp.fn.magma.eff2)+"x</span>"+(player.elementary.theory.tree.unl?(" (boosted by unspent Theory Points"+(player.elementary.theory.depth.gte(6)?(" and Primary String length)"):")")):""));
+		tmp.el.rMagmaEff.setHTML("<span class='magmaTxt'>"+showNum(tmp.fn.magma.eff2)+"</span>"+(player.elementary.theory.tree.unl?(" (受到未花费的学说点数"+(player.elementary.theory.depth.gte(6)?("和一维弦长度加成)"):"加成)")):""));
 	}
 }
 
@@ -848,7 +895,7 @@ function updatePlasma() {
 		let boostReq = getPlasmaBoostReq();
 		tmp.el.plasmaBoostBtn.setDisplay(canBuyPlasmaBoost())
 		if (canBuyPlasmaBoost()) {
-			tmp.el.plasmaBoostBtn.setHTML("Unlock a new "+getPlasmaBoostType(player.plasma.boosts.plus(1), true)+" Boost<br><br>Cost: "+showNum(boostReq)+" White Flame.")
+			tmp.el.plasmaBoostBtn.setHTML("解锁一个新的"+getPlasmaBoostType(player.plasma.boosts.plus(1), true)+"加成<br><br>花费："+showNum(boostReq)+"白色火焰。")
 			tmp.el.plasmaBoostBtn.setClasses({
 				btn: true,
 				plasma: player.plasma.whiteFlame.gte(boostReq),
@@ -885,10 +932,10 @@ function updateStatisticsHTML(){
 		updateStatTabs();
 		if (statTab == "mainStats") {
 			tmp.el.best.setTxt(formatDistance(player.bestDistance))
-			tmp.el.bestV.setTxt(formatDistance(player.bestV)+"/s")
-			tmp.el.bestA.setHTML(formatDistance(player.bestA)+"/s<sup>2</sup>")
-			tmp.el.maxEnd.setTxt(player.bestEnd.eq(0)?"":("Best-Ever Endorsements: "+showNum(player.bestEnd)))
-			tmp.el.maxEP.setTxt(player.bestEP.eq(0)?"":("Best-Ever Elementary Point gain in one reset: "+showNum(player.bestEP)))
+			tmp.el.bestV.setTxt(formatDistance(player.bestV)+"/秒")
+			tmp.el.bestA.setHTML(formatDistance(player.bestA)+"/秒<sup>2</sup>")
+			tmp.el.maxEnd.setTxt(player.bestEnd.eq(0)?"":("最高的认可数值："+showNum(player.bestEnd)))
+			tmp.el.maxEP.setTxt(player.bestEP.eq(0)?"":("一次重置中最高的基本粒子获取量："+showNum(player.bestEP)))
 		} 
 		
 		// Always called because it determines whether the tab button is shown
@@ -896,17 +943,17 @@ function updateStatisticsHTML(){
 		for (let i=0;i<Object.keys(SCALING_STARTS).length;i++) {
 			let name = Object.keys(SCALING_STARTS)[i]
 			let tt = ""
-			if (name=="hyper") tt = "Note: Hyper scaling cannot go below 50% strength :)\n"
+			if (name=="hyper") tt = "注意：究级折算的效果不会低于50% :)\n"
 			for (let r=0;r<Object.keys(SCALING_RES).length;r++) { // NESTED LOOP, REMOVE TO REDUCE LAG
 				let func = Object.values(SCALING_RES)[r]
 				let key = Object.keys(SCALING_RES)[r]
 				let amt = func(1)
 				if (MULTI_SCALINGS.includes(key)) for (let i=1;i<=SCALING_AMTS[key];i++) amt = ExpantaNum.max(amt, func(i))
 				if (amt.eq(0)||((key=="rankCheap"||key=="fn")&&!modeActive("extreme"))) continue
-				if (amt.gte(getScalingStart(name, key))) tt += capitalFirst(REAL_SCALING_NAMES[key])+" ("+showNum(getScalingPowerDisplay(name, key).times(100))+"%): Starts at "+showNum(getScalingStart(name, key))+"\n"
+				if (amt.gte(getScalingStart(name, key))) tt += capitalFirst(REAL_SCALING_NAMES[key])+" ("+showNum(getScalingPowerDisplay(name, key).times(100))+"%)：从 "+showNum(getScalingStart(name, key))+" 开始\n"
 			}
 			let blank = ""
-			if (name=="hyper") blank = "Note: Hyper scaling cannot go below 50% strength :)\n"
+			if (name=="hyper") blank = "注意：究级折算的效果不会低于50% :)\n"
 			tmp.el[name+"Stat"].changeStyle("visibility", tt==blank?"hidden":"visible")
 			if (tt!=blank) statScalingsShown = true
 			tmp.el[name+"Stat"].setAttr("widetooltip", tt)
@@ -954,24 +1001,24 @@ function updateFermionsHTML(){
 
 function updateQuarksHTML(){
 	tmp.el.quarks.setHTML(
-		showNum(player.elementary.fermions.quarks.amount) + " " + tmp.elm.ferm.quarkName() + " Quarks"
+		showNum(player.elementary.fermions.quarks.amount) + " " + tmp.elm.ferm.quarkName() + "夸克"
 	);
 	tmp.el.quarkGain.setTxt(showNum(adjustGen(tmp.elm.ferm.quarkGain, "quarks")));
 	tmp.el.quarkRewards.setTooltip(
 		tmp.elm.ferm.quarkName(true) +
-			" Quarks: " +
+			"夸克：" +
 			tmp.elm.ferm.quarkDesc(QUARK_NAMES[player.elementary.fermions.quarks.type - 1])
 	);
 }
 
 function updateLeptonsHTML(){
 	tmp.el.leptons.setHTML(
-		showNum(player.elementary.fermions.leptons.amount) + " " + tmp.elm.ferm.leptonName() + " Leptons"
+		showNum(player.elementary.fermions.leptons.amount) + " " + tmp.elm.ferm.leptonName() + "轻子"
 	);
 	tmp.el.leptonGain.setTxt(showNum(adjustGen(tmp.elm.ferm.leptonGain, "leptons")));
 	tmp.el.leptonRewards.setTooltip(
 		tmp.elm.ferm.leptonName(true) +
-			" Leptons: " +
+			"轻子：" +
 			tmp.elm.ferm.leptonDesc(LEPTON_NAMES[player.elementary.fermions.leptons.type - 1])
 	);
 }
@@ -1012,13 +1059,19 @@ function updatePhotonsHTML(){
 	tmp.el.photons.setTxt(showNum(player.elementary.bosons.gauge.photons.amount));
 	tmp.el.photonGain.setTxt(formatGain(player.elementary.bosons.gauge.photons.amount, tmp.elm.bos.photonGain, "gauge"));
 	for (let i = 1; i <= PHOTON_UPGS; i++) {
+		let chs = "";
+		chs = getScalingName("photons", i);
+		chs = chs.replace("Scaled","折算");
+		chs = chs.replace("Superscaled","超级折算");
+		chs = chs.replace("Hyper","究级折算");
+		chs = chs.replace("Atomic","原子折算");
 		tmp.el["photon" + i].setClasses({
 			btn: true,
 			locked: player.elementary.bosons.gauge.photons.amount.lt(tmp.elm.bos.photonCost[i]),
 			light: player.elementary.bosons.gauge.photons.amount.gte(tmp.elm.bos.photonCost[i])
 		});
-		tmp.el["photonLvl" + i].setTxt(getScalingName("photons", i)+"Level: "+showNum(player.elementary.bosons.gauge.photons.upgrades[i - 1]));
-		tmp.el["photonDesc" + i].setTxt(showNum(tmp.elm.bos.photonEff(i)) + "x");
+		tmp.el["photonLvl" + i].setTxt(chs+"等级： "+showNum(player.elementary.bosons.gauge.photons.upgrades[i - 1]));
+		tmp.el["photonDesc" + i].setTxt(showNum(tmp.elm.bos.photonEff(i)) + " 倍");
 		tmp.el["photonCost" + i].setTxt(showNum(tmp.elm.bos.photonCost[i]));
 	}
 }
@@ -1085,24 +1138,24 @@ function updateScalarBosonsHTML(){
 				let ac = extra.active()
 				if (ac) text = extra.desc[ac]
 			}
-			tmp.el["higgs"+name].setHTML(text+"<br>Cost: "+showNum(data.cost)+" Higgs Bosons.")
+			tmp.el["higgs"+name].setHTML(text+"<br>花费： "+showNum(data.cost)+" 希格斯玻色子。")
 		}
-		tmp.el["higgs1;1;0"].setTooltip("Currently: "+showNum(tmp.elm.bos["higgs_1;1;0"](true))+"x")
-		tmp.el["higgs0;1;1"].setTooltip("Currently: "+showNum(tmp.elm.bos["higgs_0;1;1"](true))+"x")
-		tmp.el["higgs3;0;0"].setTooltip("Currently: "+showNum(tmp.elm.bos["higgs_3;0;0"](true))+"x")
-		tmp.el["higgs0;2;1"].setTooltip("Currently: +"+showNum(tmp.elm.bos["higgs_0;2;1"](true))+"%")
-		tmp.el["higgs0;0;4"].setTooltip("Currently: "+showNum(tmp.elm.bos["higgs_0;0;4"](true))+"x")
-		tmp.el["higgs1;3;0"].setTooltip("Currently: "+showNum(tmp.elm.bos["higgs_1;3;0"](true))+"x")
-		tmp.el["higgs0;3;1"].setTooltip("Currently: "+showNum(tmp.elm.bos["higgs_0;3;1"](true))+"x")
-		tmp.el["higgs0;0;5"].setTooltip("Currently: "+showNum(tmp.elm.bos["higgs_0;0;5"](true))+" later")
+		tmp.el["higgs1;1;0"].setTooltip("目前： "+showNum(tmp.elm.bos["higgs_1;1;0"](true))+" 倍")
+		tmp.el["higgs0;1;1"].setTooltip("目前： "+showNum(tmp.elm.bos["higgs_0;1;1"](true))+" 倍")
+		tmp.el["higgs3;0;0"].setTooltip("目前： "+showNum(tmp.elm.bos["higgs_3;0;0"](true))+" 倍")
+		tmp.el["higgs0;2;1"].setTooltip("目前：+"+showNum(tmp.elm.bos["higgs_0;2;1"](true))+"%")
+		tmp.el["higgs0;0;4"].setTooltip("目前： "+showNum(tmp.elm.bos["higgs_0;0;4"](true))+" 倍")
+		tmp.el["higgs1;3;0"].setTooltip("目前： "+showNum(tmp.elm.bos["higgs_1;3;0"](true))+" 倍")
+		tmp.el["higgs0;3;1"].setTooltip("目前： "+showNum(tmp.elm.bos["higgs_0;3;1"](true))+" 倍")
+		tmp.el["higgs0;0;5"].setTooltip("目前： "+showNum(tmp.elm.bos["higgs_0;0;5"](true))+" 次延迟")
 	}
 }
 
 function updateElementaryMainDisplaysHTML(){
 	tmp.el.elmReset.setHTML(
-		player.elementary.theory.active?(tmp.elm.can?("Exit The Theoriverse to gain "+showNum(tmp.elm.theory.gain)+" Theory Points."):"Reach the end of this Elementary run to gain Theory Points."):("Reset all previous progress to gain <span class='eltxt'>" +
+		player.elementary.theory.active?(tmp.elm.can?("退出当前的学说宇宙以获得 "+showNum(tmp.elm.theory.gain)+" 学说点数。"):"Reach the end of this Elementary run to gain Theory Points."):("重置之前所有进度，并获得 <span class='eltxt'>" +
 			showNum(tmp.elm.layer.gain) +
-			"</span> Elementary Particles."+(tmp.elm.layer.gain.gte(tmp.elm.softcap)?"<span class='sc'>(softcapped)</span>":""))
+			"</span> 基本粒子。"+(tmp.elm.layer.gain.gte(tmp.elm.softcap)?"<span class='sc'>(已达软上限)</span>":""))
 	);
 	tmp.el.elmReset.setClasses({ btn: true, locked: !tmp.elm.can, elm: (tmp.elm.can&&!player.elementary.theory.active), th: (tmp.elm.can&&player.elementary.theory.active) });
 	tmp.el.elmt.setTxt(showNum(player.elementary.times));
@@ -1144,8 +1197,8 @@ function updateTheoryTreeHTML(){
 				tmp.el["gTreeSect"+i].setDisplay(unl)
 			}
 		}
-		tmp.el.treeRespec.setTxt("Reset your Theory Tree (and Elementary reset) for "+showNum(player.elementary.theory.tree.spent)+" Theory Points back.")
-		tmp.el.ach152Eff.setHTML(tmp.ach[152].has?('"Useless Theories" effect: Upgrades are '+showNum(ach152Eff())+'x cheaper.<br><br>'):"")
+		tmp.el.treeRespec.setTxt("重置学说树的升级(且强制进行一次基本重置)并返还 "+showNum(player.elementary.theory.tree.spent)+" 学说点数。")
+		tmp.el.ach152Eff.setHTML(tmp.ach[152].has?('“无用的学说”效果：升级便宜 '+showNum(ach152Eff())+' 倍。<br><br>'):"")
 	}
 }
 
@@ -1155,7 +1208,7 @@ function updateTheoryTreeHTMLPerSec() {
 			let bought = tmp.elm.theory.tree.bought(i)
 			let cap = getTreeUpgCap(i)
 			let pref = player.options.tht?"gTree":"tree"
-			tmp.el[pref+i].setTooltip(((TREE_UPGS[i].altDesc&&player.options.tht)?TREE_UPGS[i].altDesc:TREE_UPGS[i].desc)+"\n"+(bought.gte(cap)?"":("Cost: "+showNum(TREE_UPGS[i].cost(bought.div(tmp.elm.theory.tree.costScaling)).div(tmp.elm.theory.tree.costReduc).round())+" Theory Points"))+"\nCurrently: "+TREE_UPGS[i].effD(TREE_UPGS[i].effect(ExpantaNum.add(bought, i==7?TREE_UPGS[11].effect(player.elementary.theory.tree.upgrades[11]||0):0))))
+			tmp.el[pref+i].setTooltip(((TREE_UPGS[i].altDesc&&player.options.tht)?TREE_UPGS[i].altDesc:TREE_UPGS[i].desc)+"\n"+(bought.gte(cap)?"":("花费: "+showNum(TREE_UPGS[i].cost(bought.div(tmp.elm.theory.tree.costScaling)).div(tmp.elm.theory.tree.costReduc).round())+" 学说点数"))+"\n目前: "+TREE_UPGS[i].effD(TREE_UPGS[i].effect(ExpantaNum.add(bought, i==7?TREE_UPGS[11].effect(player.elementary.theory.tree.upgrades[11]||0):0))))
 		}
 	}
 }
@@ -1171,10 +1224,10 @@ function updateStringsHTML(){
 			tmp.el["str"+i+"gain"].setTxt(formatGain(player.elementary.theory.strings.amounts[i-1], getStringGain(i), "str", true))
 		}
 		let lastStr = player.elementary.theory.strings.amounts.findIndex(x => new ExpantaNum(x).eq(0))+1
-		tmp.el.nextStr.setTxt((lastStr<=1||lastStr>UNL_STR())?"":("Next String unlocks when your "+STR_NAMES[lastStr-1]+" String reaches a length of "+formatDistance(STR_REQS[lastStr])))
+		tmp.el.nextStr.setTxt((lastStr<=1||lastStr>UNL_STR())?"":("下一个弦将在"+STR_NAMES[lastStr-1]+"弦长度达到 "+formatDistance(STR_REQS[lastStr])+" 时解锁"))
 		tmp.el.entangleDiv.setDisplay(lastStr>=3||lastStr==0||player.elementary.theory.strings.entangled.gt(0))
 		tmp.el.entangle.setClasses({btn: true, locked: lastStr<3&&lastStr!=0, th: lastStr>=3||lastStr==0})
-		tmp.el.entangle.setTxt("Entangle your Strings (which resets them) to gain "+formatDistance(getEntangleGain())+" of Entangled Strings.")
+		tmp.el.entangle.setTxt("纠缠您的弦(并重置它们)以获得 "+formatDistance(getEntangleGain())+" 长度的纠缠弦。")
 		tmp.el.entangleAmt.setTxt(formatDistance(player.elementary.theory.strings.entangled))
 		tmp.el.entangleEff.setTxt(showNum(getEntangleEff()))
 	}
@@ -1187,7 +1240,7 @@ function updatePreonsHTML(){
 		tmp.el.preonAmt.setTxt(showNum(player.elementary.theory.preons.amount))
 		tmp.el.preonGain.setTxt(formatGain(player.elementary.theory.preons.amount, getPreonGain(), "preons"))
 		tmp.el.theoryBoost.setClasses({btn: true, locked: player.elementary.theory.preons.amount.lt(getTBCost()), th: player.elementary.theory.preons.amount.gte(getTBCost())})
-		tmp.el.theoryBoost.setHTML("Gain 1 Theoretical Booster (+"+showNum(getTBGain())+" Theory Points)<br>Cost: "+showNum(getTBCost())+" Preons")
+		tmp.el.theoryBoost.setHTML("获取1个学说增强器(增加 "+showNum(getTBGain())+" 学说点数)<br>花费： "+showNum(getTBCost())+" 前子")
 		tmp.el.theoryBoosters.setTxt(showNum(player.elementary.theory.preons.boosters))
 		let t = player.elementary.theory.preons.boosters
 		tmp.el.theoryBoostersEff.setTxt(showNum(player.elementary.entropy.upgrades.includes(17)?(ExpantaNum.div(t.pow(2).times(t.plus(1).pow(2)).times(t.pow(2).times(2).plus(t.times(2)).sub(1)), 12).round()):(t.div(2).times(t.plus(1)))))
@@ -1201,16 +1254,16 @@ function updateAcceleronsHTML(){
 		tmp.el.accel.setTxt(showNum(player.elementary.theory.accelerons.amount))
 		let gain = getAccelGain()
 		tmp.el.accelGain.setTxt(showNum(adjustGen(gain, "accelerons")))
-		tmp.el.accelerSC.setHTML(gain.gte(1e6)?"<span class='sc'>(softcapped)</span>":"")
+		tmp.el.accelerSC.setHTML(gain.gte(1e6)?"<span class='sc'>(已达软上限)</span>":"")
 		let accEff = getAccelEff()
-		tmp.el.accelEff.setHTML((hasDE(7)?" & are reducing the Hadron effect interval by ":" by ")+"<span class='thp'>"+showNum(accEff)+"</span>x"+(accEff.gte(2)?" <span class='sc'>(softcapped)</span>":""))
+		tmp.el.accelEff.setHTML((hasDE(7)?"及强子时间间隔减少":"")+"<span class='thp'>"+showNum(accEff)+"</span>倍"+(accEff.gte(2)?" <span class='sc'>(已达软上限)</span>":""))
 		let next = player.elementary.theory.accelerons.expanders.toNumber()+1
 		let cost = (modeActive("extreme")&&EXTREME_DE_COSTS[next])?EXTREME_DE_COSTS[next]:((modeActive("hikers_dream")&&HD_DE_COSTS[next])?HD_DE_COSTS[next]:DARK_EXPANDER_COSTS[next]);
 		tmp.el.darkExp.setClasses({btn: true, locked: (player.elementary.theory.accelerons.amount.lt(cost)||next-1>=getMaxDEs()), th: (!(player.elementary.theory.accelerons.amount.lt(cost)||next-1>=getMaxDEs()))})
-		tmp.el.darkExp.setHTML((next-1>=getMaxDEs())?"MAXED":(DARK_EXPANDER_DESCS[next]+"<br>Cost: "+showNum(cost)+" Accelerons"))
+		tmp.el.darkExp.setHTML((next-1>=getMaxDEs())?"MAXED":(DARK_EXPANDER_DESCS[next]+"<br>花费："+showNum(cost)+" 加速子"))
 		tmp.el.darkExpAmt.setTxt(showNum(player.elementary.theory.accelerons.expanders))
 		let past = ""
-		if (next>1) Array.from(Array(next-1), (_, i) => i + 1).forEach(n => past += "DE"+n+": "+DARK_EXPANDER_DESCS[n]+"<br>")
+		if (next>1) Array.from(Array(next-1), (_, i) => i + 1).forEach(n => past += "黑暗拓展器"+n+"："+DARK_EXPANDER_DESCS[n]+"<br>")
 		tmp.el.darkExpPast.setHTML(past)
 	}
 }
@@ -1221,13 +1274,13 @@ function updateInfatonsHTML(){
 		tmp.el.inflatonsDiv.setDisplay(player.elementary.theory.inflatons.unl)
 		tmp.el.inflatonAmt.setTxt(showNum(player.elementary.theory.inflatons.amount))
 		let state = tmp.elm.hc.infState
-		tmp.el.inflatonPerc.setTxt(state>=0?(showNum(state*100)+"% Inflated"):(showNum(state*(-100))+"% Deflated"))
+		tmp.el.inflatonPerc.setTxt(state>=0?(showNum(state*100)+"% 已暴胀"):(showNum(state*(-100))+"% 已收缩"))
 		tmp.el.inflatonGain.setTxt(showNum(adjustGen(tmp.elm.hc.infGain, "inflatons")))
 		tmp.el.inflaton1.setTxt(showNum(getInflatonEff1()))
 		let eff2 = getInflatonEff2()
 		tmp.el.inflaton2.setTxt(showNum(eff2))
-		tmp.el.inflatonSC.setTxt(tmp.elm.hc.infGain.gte(5e4)?" (softcapped)":"")
-		tmp.el.inflaton2sc.setTxt((eff2.gte(5)&&!player.elementary.entropy.upgrades.includes(13))?"(extremely softcapped)":"")
+		tmp.el.inflatonSC.setTxt(tmp.elm.hc.infGain.gte(5e4)?" (已达软上限)":"")
+		tmp.el.inflaton2sc.setTxt((eff2.gte(5)&&!player.elementary.entropy.upgrades.includes(13))?"(已达极端软上限)":"")
 	}
 }
 
@@ -1257,8 +1310,8 @@ function updateTheoryverseMainHTML(){
 	if (elmTab=="theory") {
 		tmp.el.thp.setTxt(showNum(player.elementary.theory.points))
 		if (thTab=="tv") {
-			tmp.el.theoriverse.setHTML(HCTVal("tv").gt(-1)?"Trapped in the Theoriverse!":hasMltMilestone(4)?("Theoriverse Depth: "+showNum(player.elementary.theory.depth)+("<br>Total TP: "+showNum(tmp.elm.theory.gainMult.times(ExpantaNum.sub(1, ExpantaNum.pow(2, player.elementary.theory.depth))).times(-1)))):(player.elementary.theory.active?("Exit The Theoriverse early for no reward."):("Enter The Theoriverse at Depth "+showNum(player.elementary.theory.depth))))
-			tmp.el.theoriverse.setTooltip(hasMltMilestone(4)?("Nerf: x^"+showNum(tmp.elm.theory.nerf)):("Entering The Theoriverse does an Elementary reset, and puts you in The Theoriverse, which will make all pre-Elementary resource generation (x^"+showNum(tmp.elm.theory.nerf)+")"))
+			tmp.el.theoriverse.setHTML(HCTVal("tv").gt(-1)?"Trapped in the Theoriverse!":hasMltMilestone(4)?("学说宇宙深度："+showNum(player.elementary.theory.depth)+("<br>总学说点数："+showNum(tmp.elm.theory.gainMult.times(ExpantaNum.sub(1, ExpantaNum.pow(2, player.elementary.theory.depth))).times(-1)))):(player.elementary.theory.active?("Exit The Theoriverse early for no reward."):("进入学说宇宙深度 "+showNum(player.elementary.theory.depth))))
+			tmp.el.theoriverse.setTooltip(hasMltMilestone(4)?("弱化：x^"+showNum(tmp.elm.theory.nerf)):("进入学说宇宙时将强制进行一次基本重置，在学说宇宙中所有基本粒子之前的资源获取量变为 (x^"+showNum(tmp.elm.theory.nerf)+")"))
 		}
 		updateSuperSymetryHTML()
 		updateTheoryTreeHTML()
@@ -1280,7 +1333,7 @@ function updateHadronicChallenges(){
 		tmp.el.hadronEff.setTxt(showNum(player.elementary.hc.claimed))
 		tmp.el.hadronNext.setTxt(showNum(tmp.elm.hc.next))
 		tmp.el.hadEffBulk.setTxt(showNum(tmp.elm.hc.hadronBulk))
-		tmp.el.hadInterval.setTxt(tmp.elm.hc.hadInterval.lt(1+0.1**(player.options.sf-1))?("Hadronic Intervals per OoM: "+showNum(tmp.elm.hc.hadInterval.log10().pow(-1))):("Hadronic Interval: "+showNum(tmp.elm.hc.hadInterval)))
+		tmp.el.hadInterval.setTxt(tmp.elm.hc.hadInterval.lt(1+0.1**(player.options.sf-1))?("每数量级的强子时间间隔："+showNum(tmp.elm.hc.hadInterval.log10().pow(-1))):("强子时间间隔："+showNum(tmp.elm.hc.hadInterval)))
 		for (let s=0;s<DYNAMIC_UNLOCK_HC_SELECTORS.length;s++) {
 			let name = DYNAMIC_UNLOCK_HC_SELECTORS[s];
 			tmp.el["hcSelectorSpan"+name].setDisplay(checkFunc(HC_DATA[name][3]));
@@ -1292,23 +1345,23 @@ function updateHadronicChallenges(){
 		}
 		for (let i=0;i<6;i++) {
 			let x = ""
-			for (let j=0;j<6;j++) x += "Difficulty Level "+(j+1)+": "+STADIUM_DESCS[HC_CHALLS[i]][j]+".\n\n"
+			for (let j=0;j<6;j++) x += "难度等级"+(j+1)+"："+STADIUM_DESCS[HC_CHALLS[i]][j]+"。\n\n"
 			tmp.el["hcChall"+HC_CHALLS[i]].setTooltip(x)
-			tmp.el["hcCurrent"+HC_CHALLS[i]].setTxt("Currently: "+showNum(getHCSelector(HC_CHALLS[i])))
+			tmp.el["hcCurrent"+HC_CHALLS[i]].setTxt("目前: "+showNum(getHCSelector(HC_CHALLS[i])))
 			
 			x = ""
-			for (let j=0;j<6;j++) x += "Difficulty Level "+(j+1)+": "+EXTREME_STADIUM_DATA[HC_EXTREME_CHALLS[i]].descs[j]+".\n\n"
+			for (let j=0;j<6;j++) x += "难度等级"+(j+1)+"："+EXTREME_STADIUM_DATA[HC_EXTREME_CHALLS[i]].descs[j]+"。\n\n"
 			tmp.el["hcExtrChall"+HC_EXTREME_CHALLS[i]].setTooltip(x)
-			tmp.el["hcCurrent"+HC_EXTREME_CHALLS[i]].setTxt("Currently: "+showNum(getHCSelector(HC_EXTREME_CHALLS[i])))
+			tmp.el["hcCurrent"+HC_EXTREME_CHALLS[i]].setTxt("目前: "+showNum(getHCSelector(HC_EXTREME_CHALLS[i])))
 		}
-		tmp.el["hcCurrenttv"].setTxt("Currently: "+showNum(getHCSelector("tv")))
-		tmp.el["hcCurrentstring"].setTxt("Currently: "+showNum(getHCSelector("string")))
-		tmp.el["hcCurrentde"].setTxt("Currently: "+showNum(getHCSelector("de")))
-		tmp.el["hcCurrentrfrm"].setTxt("Currently: "+showNum(getHCSelector("rfrm")))
-		tmp.el.hcPerc.setTxt(player.elementary.hc.active?(showNum(tmp.elm.hc.complPerc.times(100).max(0))+"% complete"):"")
+		tmp.el["hcCurrenttv"].setTxt("目前: "+showNum(getHCSelector("tv")))
+		tmp.el["hcCurrentstring"].setTxt("目前: "+showNum(getHCSelector("string")))
+		tmp.el["hcCurrentde"].setTxt("目前: "+showNum(getHCSelector("de")))
+		tmp.el["hcCurrentrfrm"].setTxt("目前: "+showNum(getHCSelector("rfrm")))
+		tmp.el.hcPerc.setTxt(player.elementary.hc.active?("已完成 "+showNum(tmp.elm.hc.complPerc.times(100).max(0))+"%"):"")
 		let ach198 = tmp.ach[198].has;
 		tmp.el.mltHCTabButton.setDisplay(ach198);
-		tmp.el.hcSelectorTitlegoal.setTxt("Challenge goal (in "+((ach198&&getHCSelector("goalMlt"))?"mlt":"uni")+")")
+		tmp.el.hcSelectorTitlegoal.setTxt("挑战目标 (单位为"+((ach198&&getHCSelector("goalMlt"))?"多宇宙":"宇宙")+")")
 	}
 }
 
@@ -1324,7 +1377,14 @@ function updateMainEnergyTabHTML(){
 			locked: !player.canRefill,
 		})
 		tmp.el.motive.setTxt(showNum(tmp.hd.motive))
-		tmp.el.nextMotive.setHTML(tmp.hd.motive.lte(((player.energyUpgs.includes(24)) ? (tmp.hd.enerUpgs ? tmp.hd.enerUpgs[24] : new ExpantaNum(0)) : new ExpantaNum(0)).max(0))?("[<span class='energy'>"+showNum(player.spentMotive.plus(player.spentMotiveGens).sub(tmp.hd.totalMotive).plus((player.energyUpgs.includes(24)) ? (tmp.hd.enerUpgs ? tmp.hd.enerUpgs[24] : new ExpantaNum(0)) : new ExpantaNum(0)).max(0))+"</span> left]"):"")
+		if(modeActive("reality")){
+			document.getElementById("bankedMotive").innerHTML = showNum(player.bankedMotive)
+			document.getElementById("bankedMotiveAdd").innerHTML = showNum(tmp.hd.totalMotive.sub(player.bankedMotive))
+		}else{
+			document.getElementById("bankedMotive").style.display = "none"
+		}
+
+		tmp.el.nextMotive.setHTML(tmp.hd.motive.lte(((player.energyUpgs.includes(24)) ? (tmp.hd.enerUpgs ? tmp.hd.enerUpgs[24] : new ExpantaNum(0)) : new ExpantaNum(0)).max(0))?("[剩下 <span class='energy'>"+showNum(player.spentMotive.plus(player.spentMotiveGens).sub(tmp.hd.totalMotive).plus((player.energyUpgs.includes(24)) ? (tmp.hd.enerUpgs ? tmp.hd.enerUpgs[24] : new ExpantaNum(0)) : new ExpantaNum(0)).max(0))+"</span>]"):"")
 		for (let i=1;i<=36;i++) {
 			let cost = getEnergyUpgCost(i)
 			tmp.el["energyUpg"+i].setClasses({
@@ -1344,7 +1404,7 @@ function updateMainEnergyTabHTML(){
 function updateGeneratorsHTML(){
 	if (enTab=="generator") {
 		let plural = player.geners.gt(1)
-		tmp.el.geners.setHTML(plural?("<span class='energy'>"+showNum(player.geners)+"</span> Generators are"):"Generator is")
+		tmp.el.geners.setHTML(plural?("共有 <span class='energy'>"+showNum(player.geners)+"</span> 个发生器，"):"发生器")
 		tmp.el.genLvl.setTxt(showNum(player.genLvl))
 		tmp.el.energyGen.setTxt(showNum(tmp.hd.energyGen))
 		tmp.el.energyLim.setTxt(showNum(getEnergyLim()))
@@ -1386,7 +1446,7 @@ function updateOverallElementaryHTML(){
 
 function updateMiscHTML(){
 	tmp.el.ts.setHTML(
-		tmp.timeSpeed.eq(1) || nerfActive("noTS") ? "" : "Time Speed: " + showNum(tmp.timeSpeed) + "x<br>"
+		tmp.timeSpeed.eq(1) || nerfActive("noTS") ? "" : "时间速度: " + showNum(tmp.timeSpeed) + " 倍<br>"
 	);
 	tmp.el.body.changeStyle("background", tmp.bc);
 	let root = document.documentElement;
@@ -1403,25 +1463,25 @@ function updateMiscHTML(){
 	tmp.el.footer.setDisplay(player.tab == "options");
 	tmp.el.newsticker.changeStyle('visibility', player.options.newst?'visible':'hidden');
 	tmp.el.hotkeys.setAttr("widetooltip", 
-		"R -> Rank Reset\n"+
-		(modeActive("extreme")?"Shift + C -> Rank Cheapener Reset\n":"")+
-		(modeActive("hikers_dream")?"J -> Rejuvenate\n":"")+
-		"T -> Tier Reset\n"+
-		(TABBTN_SHOWN.rockets()?"Shift + R -> Rocket Reset\n":"")+
-		(TABBTN_SHOWN.rockets()?"F -> Rocket Fuel Reset\n":"")+
-		((TABBTN_SHOWN.furnace()&&tmp.fn)?"Shift + F -> Blue Flame Reset\n":"")+
-		(TABBTN_SHOWN.tr()?"U -> Time Reversal\n":"")+
-		(TABBTN_SHOWN.collapse()?"C -> Collapse Reset\n":"")+
-		(TABBTN_SHOWN.pathogens()?"P -> Max All Pathogen Upgrades\n":"")+
-		(TABBTN_SHOWN.dc()?"D -> Buy Dark Core\n":"")+
-		((TABBTN_SHOWN.inf() && player.inf.endorsements.gte(10))?"E -> Get Endorsement\n":"")+
-		(INF_TABS.ascension()?"1, 2, 3, 4 -> Toggle Perks\n":"")+
-		(INF_TABS.derivatives()?"Shift + P -> Toggle Purge\n":"")+
-		(INF_TABS.derivatives()?"Shift + D -> Derivative Shift/Boost\n":"")+
-		(TABBTN_SHOWN.elementary()?"Shift + E -> Elementary Reset\n":"")+
-		(ELM_TABS.theory()?"Shift + T -> Toggle Theoriverse\n":"")+
-		(TH_TABS.strings()?"S -> Entangled String reset\n":"")+
-		(ELM_TABS.sky()?"Shift + S -> Skyrmion reset":"")
+		"R -> 级别重置\n"+
+		(modeActive("extreme")?"Shift + C -> 级别降价器重置\n":"")+
+		(modeActive("hikers_dream")?"J -> 复原能量\n":"")+
+		"T -> 阶层重置\n"+
+		(TABBTN_SHOWN.rockets()?"Shift + R -> 火箭重置\n":"")+
+		(TABBTN_SHOWN.rockets()?"F -> 火箭燃料重置\n":"")+
+		((TABBTN_SHOWN.furnace()&&tmp.fn)?"Shift + F -> 蓝色火焰重置\n":"")+
+		(TABBTN_SHOWN.tr()?"U -> 时间反演\n":"")+
+		(TABBTN_SHOWN.collapse()?"C -> 坍缩重置\n":"")+
+		(TABBTN_SHOWN.pathogens()?"P -> 最大化购买所有病原体升级\n":"")+
+		(TABBTN_SHOWN.dc()?"D -> 购买黑暗核心\n":"")+
+		((TABBTN_SHOWN.inf() && player.inf.endorsements.gte(10))?"E -> 获得认可\n":"")+
+		(INF_TABS.ascension()?"1, 2, 3, 4 -> 切换特权\n":"")+
+		(INF_TABS.derivatives()?"Shift + P -> 切换净化\n":"")+
+		(INF_TABS.derivatives()?"Shift + D -> 导数变换/提升\n":"")+
+		(TABBTN_SHOWN.elementary()?"Shift + E -> 基本重置\n":"")+
+		(ELM_TABS.theory()?"Shift + T -> 切换学说宇宙\n":"")+
+		(TH_TABS.strings()?"S -> 纠缠弦重置\n":"")+
+		(ELM_TABS.sky()?"Shift + S -> 斯格明子重置":"")
 	);
 }
 
@@ -1481,7 +1541,7 @@ function updateQFHTML() {
 				locked: entGain.lt(1),
 			})
 			tmp.el.entropyGain.setTxt(showNum(entGain))
-			tmp.el.entropyNext.setTxt(entGain.lt(1e3)?("Next at "+showNum(getEntropyNext())+" Quantum Foam"):"")
+			tmp.el.entropyNext.setTxt(entGain.lt(1e3)?("到达 "+showNum(getEntropyNext())+" 量子泡沫后可获取下一个熵"):"")
 			tmp.el.entropyAmt.setTxt(showNum(player.elementary.entropy.amount))
 			tmp.el.entropyBest.setTxt(showNum(player.elementary.entropy.best))
 			tmp.el.entropyEff.setTxt(showNum(tmp.elm.entropy.eff))
@@ -1523,7 +1583,7 @@ function updateSkyHTML() {
 			tmp.el.skyrmionEff2.setTxt(showNum(getSkyToPionSpinorGainMult()));
 			tmp.el.maxBothFields.setDisplay(tmp.ach[178].has)
 		} else if (skyTab == "pions") {
-			tmp.el.nextPionUpgs.setTxt(player.elementary.sky.amount.gte(SKY_FIELD_UPGS_REQS[SKY_FIELD_UPGS_REQS.length-1])?"":("More upgrades at "+showNum(nextFieldReq)+" Skyrmions"))
+			tmp.el.nextPionUpgs.setTxt(player.elementary.sky.amount.gte(SKY_FIELD_UPGS_REQS[SKY_FIELD_UPGS_REQS.length-1])?"":("到达 "+showNum(nextFieldReq)+" 斯格明子后可解锁更多升级"))
 			tmp.el.pionAmt.setTxt(showNum(player.elementary.sky.pions.amount))
 			tmp.el.pionGain.setTxt(formatGain(player.elementary.sky.pions.amount, tmp.elm.sky.pionGain, "sky"))
 			for (let id=1;id<=SKY_FIELDS.upgs;id++) {
@@ -1533,10 +1593,10 @@ function updateSkyHTML() {
 				})
 				tmp.el["pionUpg"+id].changeStyle("visibility", player.elementary.sky.amount.gte(SKY_FIELDS[id].req)?"visible":"hidden")
 			}
-			tmp.el.pionData.setHTML(pionSel==0?"":("Pion Upgrade &"+GREEK_LETTERS[pionSel]+"; ("+showNum(player.elementary.sky.pions.field[pionSel]||0)+")<br>"+SKY_FIELDS[pionSel].pionDesc+"<br>Currently: "+SKY_FIELDS[pionSel].desc(tmp.elm.sky.pionEff[pionSel])+"<br>Cost: "+showNum(getFieldUpgCost("pions", pionSel))+" Pions"))
+			tmp.el.pionData.setHTML(pionSel==0?"":("π介子升级 &"+GREEK_LETTERS[pionSel]+"; ("+showNum(player.elementary.sky.pions.field[pionSel]||0)+")<br>"+SKY_FIELDS[pionSel].pionDesc+"<br>目前： "+SKY_FIELDS[pionSel].desc(tmp.elm.sky.pionEff[pionSel])+"<br>花费： "+showNum(getFieldUpgCost("pions", pionSel))+" π介子"))
 			tmp.el.maxPion.setDisplay(player.elementary.entropy.upgrades.includes(20))
 		} else if (skyTab == "spinors") {
-			tmp.el.nextSpinorUpgs.setTxt(player.elementary.sky.amount.gte(SKY_FIELD_UPGS_REQS[SKY_FIELD_UPGS_REQS.length-1])?"":("More upgrades at "+showNum(nextFieldReq)+" Skyrmions"))
+			tmp.el.nextSpinorUpgs.setTxt(player.elementary.sky.amount.gte(SKY_FIELD_UPGS_REQS[SKY_FIELD_UPGS_REQS.length-1])?"":("到达 "+showNum(nextFieldReq)+" 斯格明子后可解锁更多升级"))
 			tmp.el.spinorAmt.setTxt(showNum(player.elementary.sky.spinors.amount))
 			tmp.el.spinorGain.setTxt(formatGain(player.elementary.sky.spinors.amount, tmp.elm.sky.spinorGain, "sky"))
 			for (let id=1;id<=SKY_FIELDS.upgs;id++) {
@@ -1546,7 +1606,7 @@ function updateSkyHTML() {
 				})
 				tmp.el["spinorUpg"+id].changeStyle("visibility", player.elementary.sky.amount.gte(SKY_FIELDS[id].req)?"visible":"hidden")
 			}
-			tmp.el.spinorData.setHTML(spinorSel==0?"":("Spinor Upgrade &"+GREEK_LETTERS[spinorSel]+"; ("+showNum(player.elementary.sky.spinors.field[spinorSel]||0)+")<br>"+SKY_FIELDS[spinorSel].spinorDesc+"<br>Currently: "+SKY_FIELDS[spinorSel].desc(tmp.elm.sky.spinorEff[spinorSel])+"<br>Cost: "+showNum(getFieldUpgCost("spinors", spinorSel))+" Spinors"))
+			tmp.el.spinorData.setHTML(spinorSel==0?"":("旋量升级 &"+GREEK_LETTERS[spinorSel]+"; ("+showNum(player.elementary.sky.spinors.field[spinorSel]||0)+")<br>"+SKY_FIELDS[spinorSel].spinorDesc+"<br>目前： "+SKY_FIELDS[spinorSel].desc(tmp.elm.sky.spinorEff[spinorSel])+"<br>花费： "+showNum(getFieldUpgCost("spinors", spinorSel))+" 旋量"))
 			tmp.el.maxSpinor.setDisplay(player.elementary.entropy.upgrades.includes(20))
 		}
 	}
@@ -1560,9 +1620,9 @@ function updateOverallMultiverseHTML() {
 	tmp.el.mltReset.setClasses({ btn: true, locked: !tmp.mlt.can, mlt: tmp.mlt.can });
 	if (tmp.mlt.can&&(!player.options.hideMltBtn||player.mlt.times.eq(0))) {
 		tmp.el.mltReset.setHTML(
-			(player.mlt.times.eq(0)?("You have travelled across the entire multiverse, you must move on."):("Obliterate the multiverse to create <span class='mlttxt'>" +
+			(player.mlt.times.eq(0)?("您已经穿过了整个多宇宙，您必须继续前进。"):("毁灭多宇宙以产生 <span class='mlttxt'>" +
 			showNum(tmp.mlt.layer.gain) +
-			"</span> Multiversal Energy."))
+			"</span> 多元能量。"))
 		);
 	}
 	if (player.tab == "mlt") {
@@ -1573,9 +1633,9 @@ function updateOverallMultiverseHTML() {
 		tmp.el.mltReset2.setClasses({ btn: true, locked: !tmp.mlt.can, mlt: tmp.mlt.can });
 		if (tmp.mlt.can&&player.options.hideMltBtn) {
 			tmp.el.mltReset2.setHTML(
-				(player.mlt.times.eq(0)?("You have travelled across the entire multiverse, you must move on."):("Obliterate the multiverse to create <span class='mlttxt'>" +
+				(player.mlt.times.eq(0)?("您已经穿过了整个多宇宙，您必须继续前进。"):("毁灭多宇宙以产生 <span class='mlttxt'>" +
 				showNum(tmp.mlt.layer.gain) +
-				"</span> Multiversal Energy."))
+				"</span> 多元能量。"))
 			);
 		}
 		
@@ -1588,7 +1648,7 @@ function updateOverallMultiverseHTML() {
 			if (mltSelected!="NONE") {
 				tmp.el.mltDataTxt.setHTML(getMltDisplay(mltSelected));
 				tmp.el.mltStart.setDisplay(mltUnlocked(mltSelected));
-				tmp.el.mltStart.setTxt((player.mlt.active==mltSelected)?"Resume this Multiverse":"Enter the Multiverse")
+				tmp.el.mltStart.setTxt((player.mlt.active==mltSelected)?"返回此多宇宙":"进入此多宇宙")
 				tmp.el.mltUnl.setDisplay(player.mlt.highestUnlocked<mltSelected && mltSelected>0)
 				if (player.mlt.highestUnlocked<mltSelected && mltSelected>0) {
 					tmp.el.mltUnl.setClasses({btn: true, locked: player.mlt.energy.lt(MLT_DATA[mltSelected].req), mlt: player.mlt.energy.gte(MLT_DATA[mltSelected].req)})
@@ -1607,10 +1667,10 @@ function updateOverallMultiverseHTML() {
 				tmp.el["quilt"+i+"Eff"].setTxt(showNum(i==1?tmp.mlt.quilts[i].eff:tmp.mlt.quilts[i].eff.sub(1).times(100)))
 				tmp.el["quilt"+i+"Eff2"].setTxt(showNum(tmp.mlt.quilts[i].eff2))
 				tmp.el["quiltUpg"+i].setClasses({btn: true, locked: player.mlt.energy.lt(tmp.mlt.quilts[i].upgCost), mlt: player.mlt.energy.gte(tmp.mlt.quilts[i].upgCost)})
-				tmp.el["quiltUpg"+i].setHTML("Energize this Quilt by "+showNum(tmp.mlt.quilts[i].upgPow.times(10))+"%<br>Currently: +"+showNum(tmp.mlt.quilts[i].upgEff.times(100))+"%<br>Cost: "+showNum(tmp.mlt.quilts[i].upgCost)+" ME")
+				tmp.el["quiltUpg"+i].setHTML("使此项多元织物强化"+showNum(tmp.mlt.quilts[i].upgPow.times(10))+"%<br>Currently: +"+showNum(tmp.mlt.quilts[i].upgEff.times(100))+"%<br>花费："+showNum(tmp.mlt.quilts[i].upgCost)+" 多元能量")
 			}
-			tmp.el.quilt2Eff2Desc.setTxt(hasMltMilestone(6)?", Pion gain, & Spinor gain":"")
-			tmp.el.quilt3sc.setTxt(tmp.mlt.quilts[3].eff.gte(tmp.mlt.quilts[3].scStart)?" (softcapped)":"")
+			tmp.el.quilt2Eff2Desc.setTxt(hasMltMilestone(6)?"，π介子，旋量":"")
+			tmp.el.quilt3sc.setTxt(tmp.mlt.quilts[3].eff.gte(tmp.mlt.quilts[3].scStart)?"(已达软上限)":"")
 		}
 	}
 }

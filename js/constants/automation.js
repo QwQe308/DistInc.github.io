@@ -1,8 +1,8 @@
-const AUTO_UNL = new ExpantaNum(1e12);
+const AUTO_UNL = new ExpantaNum(100);
 const ROBOT_REQS = {
-	rankbot: new ExpantaNum(10),
-	rankCheapbot: new ExpantaNum(30),
-	tierbot: new ExpantaNum(50),
+	rankbot: new ExpantaNum(2),
+	rankCheapbot: new ExpantaNum(3),
+	tierbot: new ExpantaNum(5),
 	fuelbot: new ExpantaNum(1e6)
 };
 const ROBOT_COST_INC = {
@@ -34,9 +34,9 @@ const ROBOT_COST_START = {
 	}
 };
 const ROBOT_START_INTERVAL = {
-	rankbot: new ExpantaNum(4),
-	rankCheapbot: new ExpantaNum(4.5),
-	tierbot: new ExpantaNum(5),
+	rankbot: new ExpantaNum(1),
+	rankCheapbot: new ExpantaNum(1.5),
+	tierbot: new ExpantaNum(2),
 	fuelbot: new ExpantaNum(3600)
 };
 const ROBOT_FL = {
@@ -46,6 +46,9 @@ const ROBOT_FL = {
 	fuelbot: "rf"
 };
 const AUTOMATORS = {
+	EU: function () {
+		return tmp.ach[42].has
+	},
 	furnace: function () {
 		return player.tr.upgrades.includes(21) && modeActive("extreme");
 	},
@@ -121,6 +124,7 @@ const AUTOMATORS = {
 };
 
 const AUTOMATOR_BORDER = {
+	EU: "yellow",
 	furnace: "#c4711d",
 	pathogens: "#b6c495",
 	cores: "rgb(184, 0, 82)",
@@ -148,11 +152,13 @@ const AUTOMATOR_BORDER = {
 }
 
 const AUTOMATOR_X = {
+	EU: 2,
 	elementaries: 2,
 	multiverse_runs: 2,
 }
 
 const AUTOMATOR_MODES = {
+	EU: ["KEEP AMOUNT"/*, "TIME"*/],
 	elementaries: ["AMOUNT", "TIME"],
 	multiverse_runs: ["AMOUNT", "TIME"],
 }

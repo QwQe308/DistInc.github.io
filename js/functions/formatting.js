@@ -2,7 +2,7 @@ function disp(val, places, locs, base) {
 	// Taken from OmegaNum.js (but altered slightly)
 	if (val.sign==-1) return "-"+disp(val.abs(), places, locs, base);
 	if (isNaN(val.array[0])) return "NaN";
-	if (!isFinite(val.array[0])) return "Infinity";
+	if (!isFinite(val.array[0])) return "无限";
 	var s="";
 	if (val.array.length>=2){
 		for (var i=val.array.length-1;i>=2;--i){
@@ -21,7 +21,7 @@ function disp(val, places, locs, base) {
 function showNum(val) {
 	val = new ExpantaNum(val);
 	if (val.eq(NaN)) return "NaN";
-	if (val.gte(1/0)) return "Infinity";
+	if (val.gte(1/0)) return "无限";
 	if (val.eq(0)) return "0";
 	if (val.sign == -1) return "-" + showNum(val.abs());
 	return notations[player.options.not](new ExpantaNum(val), player.options.sf - 1, 2);
@@ -81,12 +81,12 @@ function formatDistance(x, fc=multiverseCapped()) {
 		let name = Object.keys(DISTANCES)[i];
 		let val = new ExpantaNum(DISTANCES[name]);
 		if (x.lt(val) && i > 0) continue;
-		if (name=="mlt"&&fc) {
-			if (x.eq(val)) return showNum(x.div(DISTANCES.uni)) + " uni";
-			return "??? uni"
+		if (name=="多宇宙"&&fc) {
+			if (x.eq(val)) return showNum(x.div(DISTANCES.宇宙)) + "宇宙";
+			return "???宇宙"
 		}
-		if (DISTANCE_TYPES[name]=="log") return showNum(x.log10().div(val.log10())) + " " + name; 
-		return showNum(x.div(val)) + " " + name;
+		if (DISTANCE_TYPES[name]=="log") return showNum(x.log10().div(val.log10())) + name; 
+		return showNum(x.div(val)) + name;
 	}
 }
 
@@ -104,15 +104,15 @@ function formatTime(x) {
 		let name = Object.keys(TIMES)[i];
 		let val = TIMES[name];
 		if (x.lt(val) && i > 0) continue;
-		return showNum(x.div(val)) + " " + name;
+		return showNum(x.div(val)) + name;
 	}
 }
 
 function formatGain(amt, gain, name, isDist, gainNotIncluded) {
 	let trueGain = ExpantaNum.mul(name?adjustGen(gain, name):gain, gainNotIncluded||1)
 	let func = isDist?formatDistance:showNum
-	if (trueGain.gte(1e100) && trueGain.gt(amt)) return "(+"+showNum(trueGain.max(1).log10().sub(amt.max(1).log10().max(1)).times(50/VIS_UPDS[player.options.visUpd]))+" OoMs/sec)"
-	else return "(+"+func(trueGain)+"/sec)"
+	if (trueGain.gte(1e100) && trueGain.gt(amt)) return "(+"+showNum(trueGain.max(1).log10().sub(amt.max(1).log10().max(1)).times(50/VIS_UPDS[player.options.visUpd]))+"数量级/秒)"
+	else return "(+"+func(trueGain)+"/秒)"
 }
 
 function isFunc(f) {

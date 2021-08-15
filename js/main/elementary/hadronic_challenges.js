@@ -16,8 +16,8 @@ function updateTempHC() {
 
 	tmp.elm.hc.hadronEff = player.elementary.hc.hadrons.max(1).logBase(tmp.elm.hc.hadInterval).floor().times(tmp.elm.hc.hadronBulk)
 	tmp.elm.hc.next = ExpantaNum.pow(tmp.elm.hc.hadInterval, new ExpantaNum(player.elementary.hc.claimed||0).div(tmp.elm.hc.hadronBulk).plus(1))
-	let rg = new ExpantaNum(getHCSelector("goal")).times(DISTANCES.uni);
-	if (getHCSelector("goalMlt")) rg = ExpantaNum.pow(DISTANCES.mlt, getHCSelector("goal"));
+	let rg = new ExpantaNum(getHCSelector("goal")).times(DISTANCES.宇宙);
+	if (getHCSelector("goalMlt")) rg = ExpantaNum.pow(DISTANCES.多宇宙, getHCSelector("goal"));
 	tmp.elm.hc.complPerc = player.distance.log10().div(rg.log10()).min(1);
 	tmp.elm.hc.infState = getInflatonState()
 	tmp.elm.hc.infGain = getInflatonGain()
@@ -26,7 +26,7 @@ function updateTempHC() {
 }
 
 function clearHCData() {
-	if (!confirm("Are you sure you want to reset your Hadronic Challenge inputs?")) return;
+	if (!confirm("您确定要重置强子挑战的项目吗？")) return;
 	updateHCSelectorInputs(true);
 }
 
@@ -89,7 +89,7 @@ function getProjectedHadronicScore() {
 	
 	// Goal Modifier
 	let goal = new ExpantaNum(getHCSelector("goal"))
-	if (getHCSelector("goalMlt")) goal = ExpantaNum.pow(DISTANCES.mlt, goal);
+	if (getHCSelector("goalMlt")) goal = ExpantaNum.pow(DISTANCES.多宇宙, goal);
 	if (goal.gte("e1e7")) goal = ExpantaNum.pow("e1e7", goal.log("e1e7").sqrt());
 	score = score.times(goal.log10().div(Math.log10(Number.MAX_VALUE)).log10().plus(1))
 	
@@ -147,7 +147,7 @@ function updateHCSelector(name) {
 			player.elementary.hc.selectors[name] = num
 			el.el.value = disp(num, 8, 3, 10)
 		} catch(e) {
-			notifier.warn("Improper Hadronic Challenge input")
+			notifier.warn("强子挑战项目输入错误")
 			console.log(e)
 			return;
 		}
@@ -165,8 +165,8 @@ function updateHCSelector(name) {
 }
 
 function canCompleteHC() {
-	let realGoal = ExpantaNum.mul(getHCSelector("goal"), DISTANCES.uni);
-	if (getHCSelector("goalMlt")) realGoal = ExpantaNum.pow(DISTANCES.mlt, getHCSelector("goal"))
+	let realGoal = ExpantaNum.mul(getHCSelector("goal"), DISTANCES.宇宙);
+	if (getHCSelector("goalMlt")) realGoal = ExpantaNum.pow(DISTANCES.多宇宙, getHCSelector("goal"))
 	return (!(!player.elementary.hc.active)) && player.distance.gte(realGoal);
 }
 
@@ -190,12 +190,12 @@ function startHC() {
 	let mltMode = tmp.elm.hc.mltMode;
 	if (player.elementary.hc.active) {
 		if (canCompleteHC()) player.elementary.hc.best = player.elementary.hc.best.max(getProjectedHadronicScore())
-		else if (player.options.hcc) if (!confirm("Are you sure you want to exit the challenge early?")) return
+		else if (player.options.hcc) if (!confirm("您确定要提前退出挑战吗？")) return
 	} else if (getProjectedHadronicScore().lte(0)) {
-		alert("You cannot start a Hadronic Challenge with a Projected Hadronic Score of 0!")
+		alert("您无法在预计强子分数为0的情况下开始强子挑战！")
 		return
 	} else if (player.elementary.theory.active) {
-		alert("You cannot start a Hadronic Challenge while in a Theoriverse run!")
+		alert("您无法在学说宇宙中开始强子挑战！")
 		return
 	}
 	player.elementary.hc.active = !player.elementary.hc.active
@@ -249,21 +249,21 @@ function claimHadronEff() {
 
 function exportHC() {
 	let data = btoa(JSON.stringify(player.elementary.hc.selectors))
-	notifier.info("Hadronic Challenge data exported!")
+	notifier.info("强子挑战数据已导出！")
 	copyToClipboard(data)
 }
 
 function importHC() {
 	if (player.elementary.hc.active) {
-		notifier.warn("You cannot import a Hadronic Challenge while in one!")
+		notifier.warn("退出强子挑战后才可以使用导入功能！")
 		return;
 	}
-	let toImport = prompt("Paste Hadronic Challenge data here.")
+	let toImport = prompt("在此处强子挑战数据。")
 	try {
 		let data = JSON.parse(atob(toImport))
 		for (let d in data) if (checkFunc(HC_DATA[d][3])) player.elementary.hc.selectors[d] = data[d];
 		updateHCSelectorInputs()
 	} catch(e) {
-		notifier.warn("Invalid Hadronic Challenge data!")
+		notifier.warn("强子挑战数据无法识别！")
 	}
 }

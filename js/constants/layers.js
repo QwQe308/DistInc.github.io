@@ -38,10 +38,10 @@ const LAYER_RESETS = {
 };
 
 const LAYER_RESETS_EXTRA = {
-	rank: ["energy", "canRefill"],
-	rankCheap: ["energy", "canRefill"],
-	tier: ["energy", "canRefill", "rankCheap"],
-	rockets: ["energy", "canRefill", "rankCheap"],
+	rank: [/*"energy",*/ "canRefill"],
+	rankCheap: [/*"energy",*/ "canRefill"],
+	tier: [/*"energy",*/ "canRefill", "rankCheap"],
+	rockets: ["energy", "spentMotive", "energyUpgs", "canRefill", "geners", "genLvl", "spentMotiveGens", "bestMotive", "rankCheap","bankedMotive"],
 	rf: [],
 	collapse: ["energy", "canRefill", "rankCheap", "furnace"],
 	inf: ["energy", "canRefill", "rankCheap", "furnace", "activeFC"],
@@ -52,16 +52,16 @@ const LAYER_RESETS_EXTRA = {
 const LAYER_REQS = {
 	rank: ["distance", 10],
 	tier: ["rank", 3],
-	rockets: ["distance", 5e7],
+	rockets: ["distance", 1e7],
 	rf: ["rockets", 25],
-	collapse: ["distance", 50 * DISTANCES.Mpc],
-	inf: ["distance", new ExpantaNum(Number.MAX_VALUE).times(DISTANCES.uni)],
+	collapse: ["distance", 50 * DISTANCES.兆秒差距],
+	inf: ["distance", new ExpantaNum(Number.MAX_VALUE).times(DISTANCES.宇宙)],
 	elementary: [
 		["rockets", new ExpantaNum("1e300000")],
 		["cadavers", new ExpantaNum("1e30000")],
 		["endorsements", 36]
 	],
-	multiverse: ["distance", DISTANCES.mlt],
+	multiverse: ["distance", DISTANCES.多宇宙],
 };
 
 const LAYER_FP = {

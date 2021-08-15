@@ -284,7 +284,7 @@ const MODEBALANCES = {
 		balanceCheck: true
 	},
 	absurd_easy_hikers_dream: { // 72
-		balancing: "balanced up toendgame",
+		balancing: "balanced up to endgame",
 		balanceCheck: false,
 	},
 	absurd_easy_hard_hikers_dream: { // 73
@@ -382,32 +382,42 @@ const MODEBALANCES = {
 	"": { // 96
 		balancing: "balanced up to endgame",
 		balanceCheck: false,
-	}
+	},
+	extreme_hikers_dream_reality: { // 95
+		balancing: "balanced up to ???",
+		balanceCheck: true
+	},
 };
 
 const MODES = {
 	hard: {
-		desc: "The game is harder & slower, with slight compensation to help you slowly grind to the end.",
-		dis: ["extreme"]
+		desc: "游戏更难更慢，但有一些微弱的补偿，您需要一路缓慢刷到游戏终点。",
+		dis: ["extreme","reality"]
 	},
 	aau: {
-		desc: "Start with all achievements unlocked.",
+		desc: "以解锁全成就的状态开始游戏。",
 	},
 	na: {
-		desc: "All unnecessary achievements are gone.",
+		desc: "并不是没有成就，而是非必须的成就全部消失。",
 	},
 	absurd: {
-		desc: "Ehehe... You'll see...",
+		desc: "啊哈哈……你懂的……(译者注：可以通过刷新游戏来退出此模式)",
 	},
 	easy: {
-		desc: "This mode is easier & faster to help you reach the end faster.",
+		desc: "游戏更简单更快，您可以更快到达游戏终点。",
 	},
 	extreme: {
-		desc: "This mode is an extension of Hard Mode that makes it even more difficult, however adds The Furnace (a new feature) to compensate for this.",
-		ext: ["hard"]
+		desc: "困难模式的扩展，使它变得更难了，但增加了熔炉机制作为补偿。",
+		ext: ["hard"],
+		dis: ["reality"]
 	},
 	hikers_dream: {
-		desc: "You have to climb up a hill that gets steeper and steeper as you go (making progress slow down drastically), however there are new buffs to compensate for this steep hill.",
+		desc: "您就像在攀爬一座越来越陡峭的山峰一样(进度会随时间越来越慢)，但您同时也可以获得新的升级和效果作为补偿。",
+		dis: ["reality"]
+	},
+	reality: {
+		desc: "实际上想要达到更高的速度是极难的。这个模式...比极限更加困难。希望您做好了准备，新内容在等着你。",
+		ext: ["hard","extreme","hikers_dream"]
 	},
 };
 
@@ -449,6 +459,9 @@ const MODE_VARS = {
 		genLvl: new ExpantaNum(0),
 		spentMotiveGens: new ExpantaNum(0),
 		bestMotive: new ExpantaNum(0),
+	},
+	reality: {
+		bankedMotive: new ExpantaNum(0),
 	},
 };
 
@@ -508,6 +521,10 @@ const MODE_EX = {
 		source.genLvl = new ExpantaNum(source.genLvl||0)
 		source.spentMotiveGens = new ExpantaNum(source.spentMotiveGens||0)
 		source.bestMotive = new ExpantaNum(source.bestMotive||0)
+		return source;
+	},
+	reality: function(source) {
+		source.bankedMotive = new ExpantaNum(source.bankedMotive)
 		return source;
 	},
 };

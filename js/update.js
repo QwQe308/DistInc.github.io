@@ -54,16 +54,16 @@ function setupHTML() {
 	for (let i=0;i<Object.keys(RANK_DESCS).length;i++) {
 		let ranks = Object.keys(RANK_DESCS)[i]
 		table += "<div id='rankReward"+ranks+"' class='rtReward'>"
-		table += "Rank "+showNum(parseInt(ranks)+1)+": "+(RANK_DESCS[ranks][0].toUpperCase() + RANK_DESCS[ranks].slice(1))
-		if (window["rank"+ranks+"Eff"]) table += "<br>Currently: <b><span id='rankEff"+ranks+"'></span></b>x"
+		table += "级别"+showNum(parseInt(ranks)+1)+": "+(RANK_DESCS[ranks][0].toUpperCase() + RANK_DESCS[ranks].slice(1))
+		if (window["rank"+ranks+"Eff"]) table += "<br>Currently: <b><span id='rankEff"+ranks+"'></span></b>倍"
 		table += "</div>"
 	}
 	table += "</div><div class='flexContainer'>"
 	for (let i=0;i<Object.keys(TIER_DESCS).length;i++) {
 		let tiers = Object.keys(TIER_DESCS)[i]
 		table += "<div id='tierReward"+tiers+"' class='rtReward'>"
-		table += "Tier "+showNum(parseInt(tiers)+1)+": "+(TIER_DESCS[tiers][0].toUpperCase() + TIER_DESCS[tiers].slice(1))
-		if (window["tier"+tiers+"Eff"]) table += "<br>Currently: <b><span id='tierEff"+tiers+"'></span></b>x"
+		table += "阶层"+showNum(parseInt(tiers)+1)+": "+(TIER_DESCS[tiers][0].toUpperCase() + TIER_DESCS[tiers].slice(1))
+		if (window["tier"+tiers+"Eff"]) table += "<br>Currently: <b><span id='tierEff"+tiers+"'></span></b>倍"
 		table += "</div>"
 	}
 	table += "</div></div>"
@@ -134,7 +134,7 @@ function setupHTML() {
 				id +
 				"&quot;)' onclick='tmp.inf.upgs.buy(&quot;" +
 				id +
-				"&quot;)'>inf" +
+				"&quot;)'>无限" +
 				id +
 				"</button></td>";
 		}
@@ -193,7 +193,7 @@ function setupHTML() {
 	let de = DERV_MLT_2;
 	for (let i = 0; i < de.length; i++) {
 		let name = de[i];
-		let suffix = i == 0 ? "" : "/s" + (i == 1 ? "" : "<sup>" + i + "</sup>");
+		let suffix = i == 0 ? "" : "/秒" + (i == 1 ? "" : "<sup>" + i + "</sup>");
 		data +=
 			"<div id='dervDiv" +
 			name +
@@ -231,9 +231,9 @@ function setupHTML() {
 			col +
 			"Upg2' class='btn locked' onclick='tmp.elm.bos.buy(&quot;" +
 			col +
-			"&quot;, 2)'>Increase Quark & Lepton gain by " +
+			"&quot;, 2)'>将夸克和轻子的获取量增加 " +
 			showNum(10) +
-			"%.<br>Level: <span id='" +
+			"%。<br>Level: <span id='" +
 			col +
 			"Lvl2'></span><br>Currently: <span id='" +
 			col +
@@ -290,7 +290,7 @@ function setupHTML() {
 	
 	// Main Link
 	let span = new Element("linkToGame")
-	span.setHTML((betaID==""&&!window.location.href.includes(correctLink))?"Please migrate to <a href='http://"+correctLink+"/DistInc.github.io/main.html'>"+correctLink+"</a><br>":"")
+	span.setHTML((betaID==""&&!window.location.href.includes(correctLink))?"原版游戏地址：<a href='http://"+correctLink+"/DistInc.github.io/main.html'>"+correctLink+"</a><br>":"")
 	
 	// Element Setup
 	tmp.el = {}
@@ -336,12 +336,12 @@ function updateAfterTick() {
 
 function updateUnlocks() {
 	if (player.distance.gte(ExpantaNum.mul(AUTO_UNL, tmp.auto.lrm))) player.automation.unl = true;
-	if (player.distance.gte(DISTANCES.ly)) player.tr.unl = true;
+	if (player.distance.gte(DISTANCES.光年)) player.tr.unl = true;
 	if (player.distance.gte(ExpantaNum.mul(COLLAPSE_UNL, tmp.collapse.lrm))) player.collapse.unl = true;
 	if (player.collapse.cadavers.gte(ExpantaNum.mul(PATHOGENS_UNL, tmp.pathogens.lrm))) player.pathogens.unl = true;
 	if (player.distance.gte(ExpantaNum.mul(DC_UNL, tmp.dc.lrm))) player.dc.unl = true;
 	if (tmp.inf.can && !infActive && player.inf.endorsements.lt(10) && !(tmp.ach[178].has&&tmp.elm.bos.hasHiggs("2;0;0"))) tmp.inf.forceReset();
-	if (player.distance.gte(ExpantaNum.mul(DISTANCES.uni, "1e90000"))) player.inf.derivatives.unl = true;
+	if (player.distance.gte(ExpantaNum.mul(DISTANCES.宇宙, "1e90000"))) player.inf.derivatives.unl = true;
 	if (!mltActive(1)) {
 		if ((player.distance.gte(THEORY_REQ[0]) && player.bestEP.gte(THEORY_REQ[1])) || player.elementary.theory.unl) player.elementary.theory.unl = true;
 		if (player.distance.gte(HC_REQ[0]) && player.inf.endorsements.gte(HC_REQ[1])) player.elementary.hc.unl = true

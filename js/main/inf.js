@@ -38,7 +38,7 @@ function updateTempInfUpgs() {
 		if (!force)
 			if (
 				!confirm(
-					"Warning! Doing this will reset your Infinity Upgrades without giving you anything in return, and will force an Infinity reset! Are you sure you want to do this?"
+					"注意！这么做除了重置无限升级以外，您什么也得不到，并且会强制进行一次无限重置！您确定要这么做吗？"
 				)
 			)
 				return;
@@ -53,62 +53,62 @@ function updateTempInfUpgs() {
 		if (id=="4;10") return "^"+showNum(INF_UPGS.effects[id]())
 		else if (id == "2;3")
 			return (
-				"Time Cubes: " +
+				"时间方盒： " +
 				showNum(INF_UPGS.effects[id]()["cubes"]) +
-				"x, Knowledge: " +
+				" 倍，知识： " +
 				showNum(INF_UPGS.effects[id]()["knowledge"]) +
-				"x"
+				" 倍"
 			);
-		else if (id=="10;1") return "Superscaled Pathogen Upgrades: "+showNum(INF_UPGS.effects[id]("pth").times(100))+" % weaker, "+(hasMltMilestone(16)?"Final Derivative":"Snap")+": +"+formatDistance(INF_UPGS.effects[id]("snp"))+"/sec"
+		else if (id=="10;1") return "超级折算的病原体升级：减少 "+showNum(INF_UPGS.effects[id]("pth").times(100))+"%，"+(hasMltMilestone(16)?"最后一个导数":"加加加速度")+"：+"+formatDistance(INF_UPGS.effects[id]("snp"))+"/秒"
 		else if (id == "2;7" || id == "8;6" || id == "9;6" || id=="1;10")
-			return showNum(INF_UPGS.effects[id]().times(100)) + "% weaker";
+			return "减少 " + showNum(INF_UPGS.effects[id]().times(100)) + "%";
 		else if (id == "3;2")
 			return (
-				"Cadavers: " +
+				"残骸： " +
 				showNum(INF_UPGS.effects[id]()["cadavers"]) +
-				"x, Knowledge: " +
+				" 倍，知识： " +
 				showNum(INF_UPGS.effects[id]()["knowledge"]) +
-				"x"
+				" 倍"
 			);
 		else if (id == "5;7" || id == "9;2") return "+" + showNum(INF_UPGS.effects[id]());
 		else if (id == "7;2")
 			return (
-				"Ascension Power: " +
+				"飞升能量： " +
 				showNum(INF_UPGS.effects[id]()["power"]) +
-				"x, Dark Flow: " +
+				" 倍，黑暗流： " +
 				showNum(INF_UPGS.effects[id]()["flow"]) +
-				"x"
+				" 倍"
 			);
 		else if (id == "1;8" || id == "7;4" || id == "7;5") return "^" + showNum(INF_UPGS.effects[id]());
 		else if (id == "7;7")
 			return (
-				"Accelerational Energy: " +
+				"加速能量： " +
 				showNum(INF_UPGS.effects[id]()["ae"]) +
-				"x, Velocital Energy: " +
+				" 倍，速度能量： " +
 				showNum(INF_UPGS.effects[id]()["ve"]) +
-				"x, Time Speed: " +
+				" 倍，时间速度： " +
 				showNum(INF_UPGS.effects[id]()["ts"]) +
-				"x"
+				" 倍"
 			);
 		else if (id == "8;2")
 			return (
-				"Purge Power: " +
+				"净化能量： " +
 				showNum(INF_UPGS.effects[id]()["power"]) +
-				"x, Accelerational Energy: " +
+				" 倍，加速能量： " +
 				showNum(INF_UPGS.effects[id]()["energy"]) +
-				"x"
+				" 倍"
 			);
 		else if (id == "8;8" || id=="9;10") return "+" + showNum(INF_UPGS.effects[id]().sub(1).times(100)) + "%";
 		else if (id == "9;3")
 			return (
-				"Angels: " +
+				"天使： " +
 				showNum(INF_UPGS.effects[id]()["angels"]) +
-				"x, Demons: " +
+				" 倍，恶魔： " +
 				showNum(INF_UPGS.effects[id]()["demons"]) +
-				"x"
+				" 倍"
 			);
-		else if (id=="5;10") return "Pathogens: "+showNum(INF_UPGS.effects[id]().pth)+"x, Higgs Bosons: "+showNum(INF_UPGS.effects[id]().hb)+"x"
-		return showNum(INF_UPGS.effects[id]()) + "x";
+		else if (id=="5;10") return "病原体： "+showNum(INF_UPGS.effects[id]().pth)+" 倍，希格斯玻色子： "+showNum(INF_UPGS.effects[id]().hb)+" 倍"
+		return showNum(INF_UPGS.effects[id]()) + " 倍";
 	};
 	if (!tmp.inf.upgs.hover) tmp.inf.upgs.hover = function (id) {
 		tmp.infSelected = id;
@@ -127,25 +127,25 @@ function updateTempInfUpgs() {
 			((sel=="10;1"&&hasMltMilestone(16))?"Superscaled Pathogen Upgrade scaling is weaker based on your Ascension Power, and Distance produces your last Derivative at a reduced rate (unaffected by Time Speed)":INF_UPGS.descs[sel]) +
 			"<br>" +
 			(!tmp.inf.upgs.has(sel)
-				? "Cost: " +
+				? "花费： " +
 				  showNum(ExpantaNum.mul(INF_UPGS.costs[sel], tmp.inf.upgCostMult(sel))) +
-				  " knowledge<br>" +
+				  " 知识<br>" +
 				  (INF_UPGS.reqs[sel]
-						? "Req: inf" +
+						? "需求：无限" +
 						  INF_UPGS.reqs[sel].reduce(
-								(x, y, i) => x + (i == INF_UPGS.reqs[sel].length ? "" : ", ") + "inf" + y
+								(x, y, i) => x + (i == INF_UPGS.reqs[sel].length ? "" : "，") + "无限" + y
 						  ) +
 						  "<br>"
 						: "") +
 				  (INF_UPGS.repeals[sel]
-						? "Repeals: inf" +
+						? "撤销：无限" +
 						  INF_UPGS.repeals[sel].reduce(
-								(x, y, i) => x + (i == INF_UPGS.repeals[sel].length ? "" : ", ") + "inf" + y
+								(x, y, i) => x + (i == INF_UPGS.repeals[sel].length ? "" : "，") + "无限" + y
 						  ) +
 						  "<br>"
 						: "")
 				: "") +
-			(INF_UPGS.effects[sel] ? "Currently: " + tmp.inf.upgs.current(sel) : "")
+			(INF_UPGS.effects[sel] ? "目前： " + tmp.inf.upgs.current(sel) : "")
 		);
 	};
 	if (!tmp.inf.upgs.buy) tmp.inf.upgs.buy = function (id) {
@@ -182,8 +182,8 @@ function calcKnowledgeGain(){
 	if (FCComp(3)) tmp.inf.knowledgeGain = tmp.inf.knowledgeGain.times(3.2);
 	if (extremeStadiumComplete("cranius")) tmp.inf.knowledgeGain = tmp.inf.knowledgeGain.times(EXTREME_STADIUM_DATA.cranius.effect())
 	if (tmp.elm && player.elementary.times.gt(0)) {
-		tmp.inf.knowledgeGain = tmp.inf.knowledgeGain.times(tmp.elm.ferm.quarkR("charm").max(1));
-		tmp.inf.knowledgeGain = tmp.inf.knowledgeGain.times(tmp.elm.ferm.leptonR("tau").max(1));
+		tmp.inf.knowledgeGain = tmp.inf.knowledgeGain.times(tmp.elm.ferm.quarkR("粲").max(1));
+		tmp.inf.knowledgeGain = tmp.inf.knowledgeGain.times(tmp.elm.ferm.leptonR("陶").max(1));
 	}
 	if (tmp.elm) tmp.inf.knowledgeGain = tmp.inf.knowledgeGain.times(tmp.elm.bos.photonEff(2).max(1));
 	if (tmp.elm) if (tmp.elm.bos.hasHiggs("0;0;3")) tmp.inf.knowledgeGain = tmp.inf.knowledgeGain.times(3)
@@ -269,14 +269,14 @@ function updateTempInfLayer() {
 		infActive = true;
 		let amActive = player.inf.endorsements.eq(9);
 		let message =
-			"The High God <span class='infinity'>Infinity</span> has seen your power, and would like to endorse you (press E to skip)" +
-			".<br><button class='btn inf' onclick='tmp.inf.layer.reset(false, false)'>Allow <span class='infinity'>Infinity</span> to endorse you</button>";
+			"至高神<span class='infinity'>Infinity</span>已经见证了您的力量，并愿意认可您(按 E 可跳过)" +
+			"。<br><button class='btn inf' onclick='tmp.inf.layer.reset(false, false)'>允许 <span class='infinity'>Infinity</span> 认可您</button>";
 		if (amActive)
 			message =
-				"The High God <span class='infinity'>Infinity</span> has admired your prowess, and would like to give you the ability to ascend this world and become a High God yourself.<br><button class='btn inf' onclick='tmp.inf.layer.reset(false, false)'>Allow <span class='infinity'>Infinity</span> to endorse you and turn you into a High God</button>";
+				"至高神<span class='infinity'>Infinity</span>很钦佩您的非凡造诣，想要给您飞升成为至高神的机会。<br><button class='btn inf' onclick='tmp.inf.layer.reset(false, false)'>允许 <span class='infinity'>Infinity</span> 认可您并让您成为至高神</button>";
 		showHiddenDiv({
 			color: "orange",
-			title: "You have reached <span class='infinity'>Infinity</span>!",
+			title: "您已经到达了 <span class='infinity'>Infinity</span> ！",
 			body: message,
 			tab: "inf"
 		});
@@ -321,7 +321,12 @@ function updateTempInfLayer() {
 		if (mltActive(3) && player.mlt.mlt3selected.length<1) {
 			if (name=="ascension"||name=="stadium"||name=="pantheon"||name=="derivatives") {
 				player.mlt.mlt3selected.push(name)
-				notifier.info("Unlocked "+capitalFirst(name)+"!")
+				let chs = name;
+				chs = chs.replace("ascension","飞升");
+				chs = chs.replace("stadium","竞技场");
+				chs = chs.replace("pantheon","万神殿");
+				chs = chs.replace("derivatives","导数");
+				notifier.info("已解锁"+chs+"！")
 			}
 		}
 		infTab = name;
@@ -381,7 +386,7 @@ function updateTempAscension() {
 	tmp.inf.asc.perkStrength = tmp.inf.asc.perkStrength.times(tmp.soulBoost ? tmp.soulBoost : 1);
 	if (tmp.elm)
 		if (player.elementary.times.gt(0))
-			tmp.inf.asc.perkStrength = tmp.inf.asc.perkStrength.times(tmp.elm.ferm.leptonR("electron").plus(1));
+			tmp.inf.asc.perkStrength = tmp.inf.asc.perkStrength.times(tmp.elm.ferm.leptonR("电").plus(1));
 	if (tmp.elm) if (tmp.elm.pa.active) tmp.inf.asc.perkStrength = tmp.inf.asc.perkStrength.times(tmp.elm.pa.boost.max(1))
 	if (modeActive('easy')) tmp.inf.asc.perkStrength = tmp.inf.asc.perkStrength.times(1.2)
 	tmp.inf.asc.perkPower = [
@@ -412,7 +417,7 @@ function updateTempAscension() {
 	if (tmp.inf.upgs.has("8;9")) tmp.inf.asc.powerGain = tmp.inf.asc.powerGain.times(10);
 	if (tmp.elm)
 		if (player.elementary.times.gt(0))
-			tmp.inf.asc.powerGain = tmp.inf.asc.powerGain.times(tmp.elm.ferm.quarkR("bottom").max(1));
+			tmp.inf.asc.powerGain = tmp.inf.asc.powerGain.times(tmp.elm.ferm.quarkR("底").max(1));
 	if (tmp.elm) {
 		if (player.elementary.times.gt(0)) tmp.inf.asc.powerGain = tmp.inf.asc.powerGain.times(tmp.elm.bos.w2.max(1));
 		if (tmp.elm.bos.hasHiggs("0;0;4")) tmp.inf.asc.powerGain = tmp.inf.asc.powerGain.times(tmp.elm.bos["higgs_0;0;4"]())
@@ -544,7 +549,7 @@ function updateTempEnlightenments() {
 function updateTempStadium() {
 	if (!tmp.inf.stadium) tmp.inf.stadium = {};
 	if (!tmp.inf.stadium.reset) tmp.inf.stadium.reset = function () {
-		if (!confirm("Are you sure you want to do this? You will lose all of your Stadium completions!")) return;
+		if (!confirm("您确定要这么做吗？竞技场挑战的完成进度将全部丢失！")) return;
 		player.inf.stadium.completions = [];
 		if (modeActive("extreme")) player.extremeStad = []
 		tmp.inf.layer.reset(true);
@@ -602,10 +607,10 @@ function updateTempStadium() {
 		let l = Math.min(player.inf.stadium.completions.length + 1, descs.length);
 		if (player.inf.stadium.completions.includes(name))
 			l = Math.min(player.inf.stadium.completions.indexOf(name) + 1, l);
-		let tooltip = "Difficulty Level "+l+"\n";
+		let tooltip = "难度等级"+l+"\n";
 		for (let i = 0; i < l; i++) {
 			tooltip += descs[i];
-			if (i < l - 1) tooltip += ", ";
+			if (i < l - 1) tooltip += "，";
 		}
 		return tooltip;
 	};
@@ -691,7 +696,7 @@ function updateTempPantheon() {
 		if (!player.inf.pantheon.angels.plus(player.inf.pantheon.demons).gt(0)) return;
 		if (
 			!confirm(
-				"Respeccing your Angels & Demons will reset your Angels, Demons, Heavenly Chips, and Demonic Souls, and will perform an Infinity reset. Are you sure you want to do this?"
+				"洗点天使和恶魔将重置您的天使，恶魔，天堂碎片，恶魔灵魂，并且会强制进行一次无限重置。您确定要这么做吗？"
 			)
 		)
 			return;
@@ -777,7 +782,7 @@ function updateTempPurge() {
 	if (modeActive("easy")) tmp.inf.pantheon.purgeMult = tmp.inf.pantheon.purgeMult.times(4)
 	if (tmp.ach[154].has) tmp.inf.pantheon.purgeMult = tmp.inf.pantheon.purgeMult.times(2)
 	if (player.elementary.sky.unl && tmp.elm) tmp.inf.pantheon.purgeMult = tmp.inf.pantheon.purgeMult.times(tmp.elm.sky.pionEff[3])
-	tmp.inf.pantheon.purgeStart = ExpantaNum.mul(Number.MAX_VALUE, DISTANCES.uni);
+	tmp.inf.pantheon.purgeStart = ExpantaNum.mul(Number.MAX_VALUE, DISTANCES.宇宙);
 	tmp.inf.pantheon.purgeBase = new ExpantaNum(1e5);
 	if (modeActive("easy")) tmp.inf.pantheon.purgeBase = new ExpantaNum(1e3)
 	tmp.inf.pantheon.purgeExp = new ExpantaNum(1 / 2);
@@ -940,7 +945,7 @@ function updateTempDerivatives() {
 	tmp.inf.derv.boostPow = new ExpantaNum(1)
 	if (modeActive('extreme')) tmp.inf.derv.boostPow = tmp.inf.derv.boostPow.times(1.03)
 	if (tmp.elm) if (player.elementary.times.gt(0)) {
-		tmp.inf.derv.boostPow = tmp.inf.derv.boostPow.times(tmp.elm.ferm.leptonR("vibrino").plus(1))
+		tmp.inf.derv.boostPow = tmp.inf.derv.boostPow.times(tmp.elm.ferm.leptonR("振荡").plus(1))
 		tmp.inf.derv.boostPow = tmp.inf.derv.boostPow.times(tmp.elm.bos["higgs_0;2;1"]().div(100).plus(1))
 	}
 	tmp.inf.derv.boostMult = new ExpantaNum(Number.MAX_VALUE);

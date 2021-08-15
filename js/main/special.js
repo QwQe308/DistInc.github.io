@@ -1,22 +1,8 @@
 function loadTempFeatures() {
 	tmp.features = {
-		rockets: new Feature({
-			name: "rockets",
-			req: function() { return ExpantaNum.mul(LAYER_REQS["rockets"][1], tmp.rockets.lrm) },
-			res: "distance",
-			display: formatDistance,
-			reached: function() { return player.rockets.gt(0) || player.rf.gt(0) },
-			progress: function () {
-				if (player.options.featPerc=="logarithm") {
-					return player.distance
-						.max(1)
-						.log10()
-						.div(ExpantaNum.mul(LAYER_REQS["rockets"][1], tmp.rockets.lrm).log10());
-				} else return player.distance.div(ExpantaNum.mul(LAYER_REQS["rockets"][1], tmp.rockets.lrm))
-			}
-		}),
 		automation: new Feature({
 			name: "automation",
+			displayName: "自动化",
 			req: function() { return ExpantaNum.mul(AUTO_UNL, tmp.auto ? tmp.auto.lrm : 10) },
 			res: "distance",
 			display: formatDistance,
@@ -30,20 +16,38 @@ function loadTempFeatures() {
 				} else return player.distance.div(ExpantaNum.mul(AUTO_UNL, tmp.auto ? tmp.auto.lrm : 10))
 			}
 		}),
+		rockets: new Feature({
+			name: "rockets",
+			displayName: "火箭",
+			req: function() { return ExpantaNum.mul(LAYER_REQS["rockets"][1], tmp.rockets.lrm) },
+			res: "distance",
+			display: formatDistance,
+			reached: function() { return player.rockets.gt(0) || player.rf.gt(0) },
+			progress: function () {
+				if (player.options.featPerc=="logarithm") {
+					return player.distance
+						.max(1)
+						.log10()
+						.div(ExpantaNum.mul(LAYER_REQS["rockets"][1], tmp.rockets.lrm).log10());
+				} else return player.distance.div(ExpantaNum.mul(LAYER_REQS["rockets"][1], tmp.rockets.lrm))
+			}
+		}),
 		"time reversal": new Feature({
 			name: "time reversal",
-			req: function() { return new ExpantaNum(DISTANCES.ly) },
+			displayName: "时间反演",
+			req: function() { return new ExpantaNum(DISTANCES.光年) },
 			res: "distance",
 			display: formatDistance,
 			reached: function() { return player.tr.unl },
 			progress: function () {
 				if (player.options.featPerc=="logarithm") {
-					return player.distance.max(1).log10().div(new ExpantaNum(DISTANCES.ly).log10());
-				} else return ExpantaNum.div(DISTANCES.ly, player.distance).pow(-1)
+					return player.distance.max(1).log10().div(new ExpantaNum(DISTANCES.光年).log10());
+				} else return ExpantaNum.div(DISTANCES.光年, player.distance).pow(-1)
 			}
 		}),
 		collapse: new Feature({
 			name: "collapse",
+			displayName: "坍缩",
 			req: function() { return new ExpantaNum(COLLAPSE_UNL).times(tmp.collapse ? tmp.collapse.lrm : 1) },
 			res: "distance",
 			display: formatDistance,
@@ -59,6 +63,7 @@ function loadTempFeatures() {
 		}),
 		pathogens: new Feature({
 			name: "pathogens",
+			displayName: "病原体",
 			req: function() { return new ExpantaNum(PATHOGENS_UNL).times(tmp.pathogens ? tmp.pathogens.lrm : 1) },
 			res: ["collapse", "cadavers"],
 			display: showNum,
@@ -78,7 +83,7 @@ function loadTempFeatures() {
 			res: "distance",
 			display: formatDistance,
 			reached: function() { return player.dc.unl },
-			displayName: "dark circles",
+			displayName: "黑暗圆环",
 			progress: function () {
 				if (player.options.featPerc=="logarithm") {
 					return player.distance
@@ -90,6 +95,7 @@ function loadTempFeatures() {
 		}),
 		infinity: new Feature({
 			name: "infinity",
+			displayName: "无限",
 			req: function() { return new ExpantaNum(INF_UNL) },
 			res: "distance",
 			display: formatDistance,
@@ -101,6 +107,7 @@ function loadTempFeatures() {
 		}),
 		ascension: new Feature({
 			name: "ascension",
+			displayName: "飞升",
 			req: function() { return new ExpantaNum(10) },
 			res: ["inf", "endorsements"],
 			display: showNum,
@@ -115,7 +122,7 @@ function loadTempFeatures() {
 			res: ["inf", "endorsements"],
 			display: showNum,
 			reached: function() { return player.inf.endorsements.gte(15) },
-			displayName: "the stadium",
+			displayName: "竞技场",
 			progress: function () {
 				return player.inf.endorsements.div(15);
 			}
@@ -126,24 +133,26 @@ function loadTempFeatures() {
 			res: ["inf", "endorsements"],
 			display: showNum,
 			reached: function() { return player.inf.endorsements.gte(21) },
-			displayName: "the pantheon",
+			displayName: "万神殿",
 			progress: function () {
 				return player.inf.endorsements.div(21);
 			}
 		}),
 		derivatives: new Feature({
 			name: "derivatives",
-			req: function() { return ExpantaNum.mul(DISTANCES.uni, "1e90000") },
+			displayName: "导数",
+			req: function() { return ExpantaNum.mul(DISTANCES.宇宙, "1e90000") },
 			res: "distance",
 			display: formatDistance,
 			reached: function() { return player.inf.derivatives.unl },
 			progress: function () {
-				if (player.options.featPerc=="logarithm") return player.distance.max(1).log10().div(ExpantaNum.mul(DISTANCES.uni, "1e90000").log10());
-				else return player.distance.div(ExpantaNum.mul(DISTANCES.uni, "1e90000"))
+				if (player.options.featPerc=="logarithm") return player.distance.max(1).log10().div(ExpantaNum.mul(DISTANCES.宇宙, "1e90000").log10());
+				else return player.distance.div(ExpantaNum.mul(DISTANCES.宇宙, "1e90000"))
 			}
 		}),
 		elementary: new Feature({
 			name: "elementary",
+			displayName: "基本粒子",
 			res_amt: 3,
 			req: [
 				new ExpantaNum(LAYER_REQS.elementary[0][1]),
@@ -174,6 +183,7 @@ function loadTempFeatures() {
 		}),
 		theory: new Feature({
 			name: "theory",
+			displayName: "学说",
 			res_amt: 2,
 			req: [
 				new ExpantaNum(THEORY_REQ[0]),
@@ -190,6 +200,7 @@ function loadTempFeatures() {
 		}),
 		"hadronic challenge": new Feature({
 			name: "hadronic challenge",
+			displayName: "强子挑战",
 			res_amt: 2,
 			req: [
 				new ExpantaNum(HC_REQ[0]),
@@ -206,17 +217,19 @@ function loadTempFeatures() {
 		}),
 		"quantum foam": new Feature({
 			name: "quantum foam",
+			displayName: "量子泡沫",
 			req: function() { return new ExpantaNum(FOAM_REQ) },
 			res: "distance",
 			display: formatDistance,
 			reached: function() { return player.elementary.foam.unl },
 			progress: function () {
-				if (player.options.featPerc=="logarithm") return player.distance.max(1).log10().div(ExpantaNum.mul(DISTANCES.uni, FOAM_REQ).log10());
-				else return player.distance.div(ExpantaNum.mul(DISTANCES.uni, FOAM_REQ))
+				if (player.options.featPerc=="logarithm") return player.distance.max(1).log10().div(ExpantaNum.mul(DISTANCES.宇宙, FOAM_REQ).log10());
+				else return player.distance.div(ExpantaNum.mul(DISTANCES.宇宙, FOAM_REQ))
 			}
 		}),
 		skyrmions: new Feature({
 			name: "skyrmions",
+			displayName: "斯格明子",
 			res_amt: 3,
 			req: [
 				new ExpantaNum(getSkyReqData(0)),
@@ -249,15 +262,16 @@ function loadTempFeatures() {
 		}),
 		multiverse: new Feature({
 			name: "multiverse",
-			req: function() { return new ExpantaNum(DISTANCES.mlt) },
+			displayName: "多宇宙",
+			req: function() { return new ExpantaNum(DISTANCES.多宇宙) },
 			res: "distance",
 			display: formatDistance,
 			reached: function() { return false },
 			progress: function() {
 				if (player.options.featPerc=="logarithm") {
-					return player.distance.max(1).log10().div(ExpantaNum.log10(DISTANCES.mlt)).min(1);
+					return player.distance.max(1).log10().div(ExpantaNum.log10(DISTANCES.多宇宙)).min(1);
 				} else {
-					return player.distance.div(DISTANCES.mlt).min(1);
+					return player.distance.div(DISTANCES.多宇宙).min(1);
 				}
 			},
 		}),
